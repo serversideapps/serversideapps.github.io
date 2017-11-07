@@ -1369,7 +1369,7 @@ var GUI = /** @class */ (function () {
             heightPx(Config.PREFERRED_BOARD_SIZE - 65);
         this.pgnkeytext = new HTMLInputElement_;
         this.pgnvaluetext = new HTMLInputElement_;
-        this.pgnvaluetext.widthPx(465);
+        this.pgnvaluetext.widthPx(365);
         var pgneditbutton = new HTMLButtonElement_().
             value("Edit").
             onmousedown(this.pgneditbuttonpressed.bind(this));
