@@ -728,8 +728,8 @@ var Book = /** @class */ (function () {
 }());
 var Config;
 (function (Config) {
-    Config.PREFERRED_BOARD_SIZE = 400;
-    Config.PREFERRED_TAB_SIZE = 900;
+    Config.PREFERRED_BOARD_SIZE = 480;
+    Config.PREFERRED_TAB_SIZE = 820;
     Config.STANDARD_START_RAW_FEN = "r0n0b0q0k0b0n0r0" +
         "p0p0p0p0p0p0p0p0" +
         "-0-0-0-0-0-0-0-0" +
