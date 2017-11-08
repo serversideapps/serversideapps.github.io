@@ -77,6 +77,8 @@ void resetBoardOnly(Board* b){
 	b->santomove=0;
 
 	///////////////////////////////////////////
+
+	positionChanged(b);
 }
 
 void resetBoard(Board* b){
@@ -825,10 +827,14 @@ void makeMove(Board* b,Move m){
 	}
 	/////////////////////////////////////////////////////////////////
 	}
+
+	positionChanged(b);
 }
 
 Move toRichMove(Board* b,Move m){
-	legalMovesForColor(b,b->turn);
+	if(b->test){
+		legalMovesForColor(b,b->turn);
+	}
 
 	b->mptr=legalmovebuff;
 
@@ -923,6 +929,7 @@ void back(){
 	if(parent!=0){
 		b.current=parent;		
 		_memcpy((uint8_t*)&b.current->b,(uint8_t*)&b,sizeof(Board));		
+		positionChanged(&b);
 	}
 }
 
@@ -931,6 +938,7 @@ void forward(){
 	if(lastsibling!=0){
 		b.current=lastsibling;
 		_memcpy((uint8_t*)&b.current->b,(uint8_t*)&b,sizeof(Board));
+		positionChanged(&b);
 	}
 }
 
@@ -943,6 +951,7 @@ void delete(){
 void tobegin(){
 	b.current=b.root;
 	_memcpy((uint8_t*)&b.current->b,(uint8_t*)&b,sizeof(Board));		
+	positionChanged(&b);
 }
 
 void toend(){	
@@ -950,11 +959,13 @@ void toend(){
 		b.current=getlastsibling(b.current);
 	}
 	_memcpy((uint8_t*)&b.current->b,(uint8_t*)&b,sizeof(Board));	
+	positionChanged(&b);
 }
 
 void tonode(GameNode* gn){
 	b.current=gn;
 	_memcpy((uint8_t*)&b.current->b,(uint8_t*)&b,sizeof(Board));	
+	positionChanged(&b);
 }
 
 uint8_t castleSideLetterToIndex(Board* b,uint8_t color,uint8_t sideletter){
@@ -1291,7 +1302,9 @@ void createCastlingRegistries(Board* b){
 void sortedLegalSanList(Board* b){
 	str ptr=outbuff;
 
-	legalMovesForColor(b,b->turn);
+	if(b->test){
+		legalMovesForColor(b,b->turn);
+	}
 
 	b->mptr=legalmovebuff;	
 
@@ -1680,6 +1693,7 @@ uint8_t setFromFen(Board* b,str fen){
 	if(!setFromFullmoveFen(&testb,sr->chunks[5])) return 0;
 	_memcpy((uint8_t*)&testb,(uint8_t*)b,sizeof(Board));
 	b->test=test;
+	positionChanged(b);
 	return 1;
 }
 
@@ -1721,7 +1735,7 @@ str codeToVariantName(int v){
 		case VARIANT_STANDARD:
 			vnb[0]='S';vnb[1]='t';vnb[2]='a';vnb[3]='n';vnb[4]='d';vnb[5]='a';vnb[6]='r';vnb[7]='d';vnb[8]=0;break;
 		case VARIANT_ATOMIC:
-			vnb[0]='A';vnb[1]='t';vnb[2]='o';vnb[3]='m';vnb[4]='i';vnb[5]='c';vnb[6]=0;
+			vnb[0]='A';vnb[1]='t';vnb[2]='o';vnb[3]='m';vnb[4]='i';vnb[5]='c';vnb[6]=0;break;
 		case VARIANT_FOUR_PLAYER:
 			vnb[0]='F';vnb[1]='o';vnb[2]='u';vnb[3]='r';vnb[4]=' ';vnb[5]='P';vnb[6]='l';vnb[7]='a';vnb[8]='y';vnb[9]='e';vnb[10]='r';vnb[11]=0;break;
 		default:vnb[0]='-';vnb[1]=0;
@@ -1745,4 +1759,10 @@ uint8_t invColor(uint8_t color){
 
 uint8_t isExploded(Board* b,uint8_t color){
 	return !isSquareValid(b,whereIsKing(b,color));
+}
+
+void positionChanged(Board* b){
+	if(!b->test){
+		legalMovesForColor(b,b->turn);	
+	}
 }

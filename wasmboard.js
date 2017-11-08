@@ -349,6 +349,19 @@ var Misc;
         return Logger;
     }());
     Misc.Logger = Logger;
+    var Timer = /** @class */ (function () {
+        function Timer(_caption, _log) {
+            this.caption = _caption;
+            this.log = _log;
+            this.now = performance.now();
+        }
+        Timer.prototype.report = function () {
+            var elapsed = performance.now() - this.now;
+            this.log(new Logitem(this.caption + " took " + elapsed.toLocaleString()));
+        };
+        return Timer;
+    }());
+    Misc.Timer = Timer;
 })(Misc || (Misc = {}));
 var Analysis;
 (function (Analysis) {
@@ -728,8 +741,8 @@ var Book = /** @class */ (function () {
 }());
 var Config;
 (function (Config) {
-    Config.PREFERRED_BOARD_SIZE = 480;
-    Config.PREFERRED_TAB_SIZE = 820;
+    Config.PREFERRED_BOARD_SIZE = 400;
+    Config.PREFERRED_TAB_SIZE = 900;
     Config.STANDARD_START_RAW_FEN = "r0n0b0q0k0b0n0r0" +
         "p0p0p0p0p0p0p0p0" +
         "-0-0-0-0-0-0-0-0" +
@@ -888,6 +901,34 @@ var HTMLElement_ = /** @class */ (function () {
     };
     HTMLElement_.prototype.paddingPx = function (paddingpx) {
         return this.padding(paddingpx + "px");
+    };
+    HTMLElement_.prototype.paddingBottom = function (paddingbottom) {
+        this.e.style.paddingBottom = paddingbottom;
+        return this;
+    };
+    HTMLElement_.prototype.paddingBottomPx = function (paddingbottompx) {
+        return this.paddingBottom(paddingbottompx + "px");
+    };
+    HTMLElement_.prototype.paddingLeft = function (paddingleft) {
+        this.e.style.paddingLeft = paddingleft;
+        return this;
+    };
+    HTMLElement_.prototype.paddingLeftPx = function (paddingleftpx) {
+        return this.paddingLeft(paddingleftpx + "px");
+    };
+    HTMLElement_.prototype.paddingRight = function (paddingright) {
+        this.e.style.paddingRight = paddingright;
+        return this;
+    };
+    HTMLElement_.prototype.paddingRightPx = function (paddingrightpx) {
+        return this.paddingRight(paddingrightpx + "px");
+    };
+    HTMLElement_.prototype.paddingTop = function (paddingtop) {
+        this.e.style.paddingTop = paddingtop;
+        return this;
+    };
+    HTMLElement_.prototype.paddingTopPx = function (paddingtoppx) {
+        return this.paddingTop(paddingtoppx + "px");
     };
     HTMLElement_.prototype.margin = function (margin) {
         this.e.style.margin = margin;
@@ -1315,8 +1356,11 @@ var GUI = /** @class */ (function () {
     function GUI() {
         this.LABEL_BCOL = "#efefef";
         this.PADDING = 3;
+        this.CONTROL_BUTTON_WIDTH = 24;
+        this.CONTROL_BUTTON_PADDING_LEFT = 3;
         this.book = null;
         this.state = new GUIState();
+        this.rndon = false;
         this.root = new HTMLDivElement_();
         document.body.appendChild(this.root.e);
     }
@@ -1369,7 +1413,7 @@ var GUI = /** @class */ (function () {
             heightPx(Config.PREFERRED_BOARD_SIZE - 65);
         this.pgnkeytext = new HTMLInputElement_;
         this.pgnvaluetext = new HTMLInputElement_;
-        this.pgnvaluetext.widthPx(365);
+        this.pgnvaluetext.widthPx(465);
         var pgneditbutton = new HTMLButtonElement_().
             value("Edit").
             onmousedown(this.pgneditbuttonpressed.bind(this));
@@ -1416,25 +1460,36 @@ var GUI = /** @class */ (function () {
             onChange(this.variantChanged.bind(this));
         var flipbutton = new HTMLButtonElement_().
             value("F").
-            onmousedown(this.flipbuttonpressed.bind(this));
+            onmousedown(this.flipbuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH);
         var resetbutton = new HTMLButtonElement_().
             value("R").
-            onmousedown(this.resetbuttonpressed.bind(this));
+            onmousedown(this.resetbuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH);
         var tobeginbutton = new HTMLButtonElement_().
             value("|<").
-            onmousedown(this.tobeginbuttonpressed.bind(this));
+            onmousedown(this.tobeginbuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH).
+            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
         var backbutton = new HTMLButtonElement_().
             value("<").
-            onmousedown(this.backbuttonpressed.bind(this));
+            onmousedown(this.backbuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH).
+            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
         var forwardbutton = new HTMLButtonElement_().
             value(">").
-            onmousedown(this.forwardbuttonpressed.bind(this));
+            onmousedown(this.forwardbuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH);
         var toendbutton = new HTMLButtonElement_().
             value(">|").
-            onmousedown(this.toendbuttonpressed.bind(this));
+            onmousedown(this.toendbuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH).
+            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
         var deletebutton = new HTMLButtonElement_().
             value("X").
-            onmousedown(this.deletebuttonpressed.bind(this));
+            onmousedown(this.deletebuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH).
+            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
         this.saninputtext = new HTMLInputElement_();
         this.saninputtext.widthPx(50);
         var makesanbutton = new HTMLButtonElement_().
@@ -1466,22 +1521,35 @@ var GUI = /** @class */ (function () {
         tr3.appendChild(td31);
         var startenginebutton = new HTMLButtonElement_().
             value(">").
-            onmousedown(this.startenginebuttonpressed.bind(this));
+            onmousedown(this.startenginebuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH).
+            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
         var makeanalyzedmovebutton = new HTMLButtonElement_().
             value("*").
-            onmousedown(this.makeanalyzedmovebuttonpressed.bind(this, false));
+            onmousedown(this.makeanalyzedmovebuttonpressed.bind(this, false)).
+            widthPx(this.CONTROL_BUTTON_WIDTH).
+            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
         var makeandstoreanalyzedmovebutton = new HTMLButtonElement_().
             value("*!").
-            onmousedown(this.makeanalyzedmovebuttonpressed.bind(this, true));
+            onmousedown(this.makeanalyzedmovebuttonpressed.bind(this, true)).
+            widthPx(this.CONTROL_BUTTON_WIDTH).
+            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
         var stopenginebutton = new HTMLButtonElement_().
             value("_").
-            onmousedown(this.stopenginebuttonpressed.bind(this));
+            onmousedown(this.stopenginebuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH).
+            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
         var restartenginebutton = new HTMLButtonElement_().
             value("!").
-            onmousedown(this.restartenginebuttonpressed.bind(this));
+            onmousedown(this.restartenginebuttonpressed.bind(this)).
+            widthPx(this.CONTROL_BUTTON_WIDTH).
+            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
         var connectenginebutton = new HTMLButtonElement_().
             value("Connect").
             onmousedown(this.connectenginebuttonpressed.bind(this));
+        var rndbutton = new HTMLButtonElement_().
+            value("Rnd").
+            onmousedown(this.rndbuttonpressed.bind(this));
         econtrolpanel.appendChild(startenginebutton);
         econtrolpanel.appendChild(makeanalyzedmovebutton);
         econtrolpanel.appendChild(makeandstoreanalyzedmovebutton);
@@ -1489,6 +1557,7 @@ var GUI = /** @class */ (function () {
         econtrolpanel.appendChild(restartenginebutton);
         econtrolpanel.appendChild(restartenginebutton);
         econtrolpanel.appendChild(connectenginebutton);
+        econtrolpanel.appendChild(rndbutton);
         td31.appendChild(econtrolpanel);
         this.analyzer = new Analysis.Analyzer();
         this.analyzer.log = this.log.bind(this);
@@ -1497,6 +1566,7 @@ var GUI = /** @class */ (function () {
             _this.setVariant();
             wboard.draw();
             _this.root.appendChild(table);
+            Globals.log = _this.log.bind(_this);
         }).bind(this), 0);
     };
     GUI.prototype.setVariant = function (variant) {
@@ -1609,6 +1679,23 @@ var GUI = /** @class */ (function () {
         this.book.store();
         Globals.wboard.draw();
     };
+    GUI.prototype.makerandom = function () {
+        if (this.rndon) {
+            if (Globals.wboard.makeRandomMove())
+                setTimeout(this.makerandom.bind(this), 100);
+            else
+                this.rndon = false;
+        }
+    };
+    GUI.prototype.rndbuttonpressed = function (e) {
+        if (this.rndon) {
+            this.rndon = false;
+        }
+        else {
+            this.rndon = true;
+            this.makerandom();
+        }
+    };
     return GUI;
 }());
 var wBoard = /** @class */ (function (_super) {
@@ -1711,7 +1798,9 @@ var wBoard = /** @class */ (function (_super) {
         return new Vectors.Square(sq.rank, this.getLastFile() - sq.file);
     };
     wBoard.prototype.sortedLegalSanList = function () {
+        var t = new Misc.Timer("sorted legal sans", Globals.log);
         this.exports._sortedLegalSanListMain();
+        t.report();
         return this.outbuff.toString();
     };
     wBoard.prototype.sanclicked = function (san, e) {
@@ -1748,8 +1837,23 @@ var wBoard = /** @class */ (function (_super) {
         return this.outbuff.toString();
     };
     wBoard.prototype.setFromPgn = function (pgn) {
+        var t = new Misc.Timer("set from pgn", Globals.log);
         this.inbuff.strCpy(pgn);
         this.exports._setFromPgnMain();
+        t.report();
+    };
+    wBoard.prototype.makeRandomMove = function () {
+        var sanlist = this.sortedLegalSanList();
+        if (sanlist.length > 0) {
+            var sans = sanlist.split("\n");
+            var r = Math.floor(Math.random() * sans.length);
+            if (r >= sans.length)
+                r = 0;
+            this.makeSanMove(sans[r]);
+            this.draw();
+            return true;
+        }
+        return false;
     };
     wBoard.prototype.dosetFromPgn = function (pgn) {
         this.setFromPgn(pgn);
@@ -1883,6 +1987,7 @@ var wBoard = /** @class */ (function (_super) {
     };
     wBoard.prototype.draw = function (storepgn) {
         if (storepgn === void 0) { storepgn = true; }
+        var t = new Misc.Timer("wboard draw", Globals.log);
         //Globals.gui.log(new Misc.Logitem(this.reportBoardState()))                
         Globals.gui.fentext.setText(this.reportFen());
         var pgn = this.reportPgn();
@@ -1967,6 +2072,7 @@ var wBoard = /** @class */ (function (_super) {
         }
         this.dragz = wBoard.PIECE_Z_INDEX + 1;
         this.showBookPage();
+        t.report();
     };
     wBoard.prototype.piecedragstart = function (sq, pdiv, e) {
         var me = e;
@@ -2090,6 +2196,7 @@ var Globals;
 (function (Globals) {
     Globals.gui = new GUI();
     Globals.wboard = new wBoard();
+    Globals.log = function (li) { };
 })(Globals || (Globals = {}));
 var gui = Globals.gui;
 var wboard = Globals.wboard;

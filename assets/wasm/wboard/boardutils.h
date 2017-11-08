@@ -223,4 +223,6 @@ extern uint8_t invColor(uint8_t color);
 extern uint8_t kingsAdjacent(Board* b);
 extern uint8_t isExploded(Board* b,uint8_t color);
 
+extern void positionChanged(Board* b);
+
 #endif
