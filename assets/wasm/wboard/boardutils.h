@@ -28,6 +28,10 @@
 
 #define FOUR_PLAYER_VOID_SQUARES 3
 
+#define MAX_FEN_LENGTH 250
+
+#define P(C) *ptr++ = C
+
 //////////////////////////////////////////////////////////////////////////
 
 extern Move legalmovebuff[MAX_MOVES];
@@ -59,7 +63,11 @@ extern void resetBoard(Board* b);
 
 extern void resetMain();
 
+extern void initVariant(int v);
+
 //////////////////////////////////////////////////////////////////////////
+
+extern void setStartPos(int v);
 
 extern void setFromRawFen(Board* b);
 extern str reportBoardRep(Board* b,str ptr);

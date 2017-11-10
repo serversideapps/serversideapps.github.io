@@ -21,6 +21,44 @@ rep_t startpos;
 
 //////////////////////////////////////////////////////////////////////////
 
+uint8_t STANDARD_STARTPOS[MAX_FEN_LENGTH];
+//"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+uint8_t FOUR_PLAYER_STARTPOS[MAX_FEN_LENGTH];
+//"3rnbqkbnr3/3pppppppp3/>/SO:os/MO:om/AO:oa/LO:ot/TO:ol/AO:oa/MO:om/SO:os/>/3PPPPPPPP3/3RNBKQBNR3 w LTltKQkq - 0 1";
+
+//////////////////////////////////////////////////////////////////////////
+
+void initModule(){
+	str ptr=(str)&STANDARD_STARTPOS;
+
+	P('r');P('n');P('b');P('q');P('k');P('b');P('n');P('r');P('/');
+	P('p');P('p');P('p');P('p');P('p');P('p');P('p');P('p');P('/');
+	P('8');P('/');P('8');P('/');P('8');P('/');P('8');P('/');
+	P('P');P('P');P('P');P('P');P('P');P('P');P('P');P('P');P('/');
+	P('R');P('N');P('B');P('Q');P('K');P('B');P('N');P('R');P(' ');
+	P('w');P(' ');P('K');P('Q');P('k');P('Q');P(' ');P('-');P(' ');P('0');P(' ');P('1');P(0);
+
+	ptr=(str)&FOUR_PLAYER_STARTPOS;
+
+	P('3');P('r');P('n');P('b');P('q');P('k');P('b');P('n');P('r');P('3');P('/');
+	P('3');P('p');P('p');P('p');P('p');P('p');P('p');P('p');P('p');P('3');P('/');
+	P('>');P('/');
+	P('S');P('O');P(':');P('o');P('s');P('/');
+	P('M');P('O');P(':');P('o');P('m');P('/');
+	P('A');P('O');P(':');P('o');P('a');P('/');
+	P('L');P('O');P(':');P('o');P('t');P('/');
+	P('T');P('O');P(':');P('o');P('l');P('/');
+	P('A');P('O');P(':');P('o');P('a');P('/');
+	P('M');P('O');P(':');P('o');P('m');P('/');
+	P('S');P('O');P(':');P('o');P('s');P('/');
+	P('>');P('/');
+	P('3');P('P');P('P');P('P');P('P');P('P');P('P');P('P');P('P');P('3');P('/');
+	P('3');P('R');P('N');P('B');P('K');P('Q');P('B');P('N');P('R');P('3');P(' ');
+	P('w');P(' ');P('L');P('T');P('l');P('t');P('K');P('Q');P('k');P('Q');P(' ');P('-');P(' ');P('0');P(' ');P('1');P(0);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 void setVariant(int v){
 	variant=v;
 	setNumFiles(STANDARD_NUM_FILES);
@@ -101,6 +139,33 @@ void resetMain(){
 
 //////////////////////////////////////////////////////////////////////////
 
+void initVariant(int v){
+	setVariant(v);
+
+	setStartPos(v);
+
+	resetMain();
+
+	startlog();	
+	logstr(codeToVariantName(v));
+	logchar('\n');
+	reportBoardRep(&b,logptr);
+	conslog();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void setStartPos(int v){
+	Board testb;
+
+	if(v<FOUR_PLAYER_BASE){
+		setFromFen(&testb,(str)STANDARD_STARTPOS);
+	} else {
+		setFromFen(&testb,(str)FOUR_PLAYER_STARTPOS);
+	}
+	copyRep(testb.rep,startpos);
+}
+
 void setFromRawFen(Board* b){
 	str ptr=inbuff;
 
@@ -122,7 +187,7 @@ str reportBoardRep(Board* b,str ptr){
 			*ptr++=p.kind;
 			*ptr++=p.color;
 		}
-		*ptr++='\n';
+		if(r<lastrank) *ptr++='\n';
 	}	
 	*ptr=0;
 	return ptr;
