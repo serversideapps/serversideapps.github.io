@@ -117,9 +117,36 @@ var WasmLoader;
     }());
     WasmLoader_1.WasmLoader = WasmLoader;
 })(WasmLoader || (WasmLoader = {}));
+var TextAsset = /** @class */ (function () {
+    function TextAsset(_url) {
+        this.isready = false;
+        this.url = _url;
+    }
+    TextAsset.prototype.fetchThen = function (callback) {
+        var _this = this;
+        if (callback === void 0) { callback = null; }
+        fetch(this.url).then(function (response) { return response.arrayBuffer(); }).then(function (bytes) { return _this.onload(bytes); });
+    };
+    TextAsset.prototype.onload = function (bytes) {
+        var view = new Uint8Array(bytes);
+        this.text = TextEncodingUtils.decode(view);
+        this.isready = true;
+    };
+    TextAsset.prototype.load = function () {
+        this.fetchThen(this.onload.bind(this));
+    };
+    TextAsset.prototype.ready = function () {
+        return this.isready;
+    };
+    TextAsset.prototype.asJson = function () {
+        return JSON.parse(this.text);
+    };
+    return TextAsset;
+}());
 var AssetLoader = /** @class */ (function () {
     function AssetLoader() {
-        this.WAIT = 50;
+        this.WAIT = 250;
+        this.RETRIES = 40;
         this.items = [];
         this.errorcallback = function () {
             console.log("loading assets failed");
@@ -129,8 +156,12 @@ var AssetLoader = /** @class */ (function () {
         this.items.push(l);
         return this;
     };
-    AssetLoader.prototype.setcallback = function (callback) {
-        this.callback = callback;
+    AssetLoader.prototype.setcallback = function (_callback) {
+        this.callback = _callback;
+        return this;
+    };
+    AssetLoader.prototype.seterrorcallback = function (_errorcallback) {
+        this.errorcallback = _errorcallback;
         return this;
     };
     AssetLoader.prototype.load = function () {
@@ -143,7 +174,7 @@ var AssetLoader = /** @class */ (function () {
         for (var i in this.items) {
             if (!this.items[i].ready()) {
                 this.retries++;
-                if (this.retries <= 50) {
+                if (this.retries <= this.RETRIES) {
                     console.log("waiting for assets to load... try " + this.retries);
                     setTimeout(this.loadwait.bind(this), this.WAIT);
                     return;
@@ -325,10 +356,29 @@ var Vectors;
 })(Vectors || (Vectors = {}));
 var Misc;
 (function (Misc) {
+    function isDefined(x) {
+        return ((x != undefined) && (x != null) && (x != "null"));
+    }
+    Misc.isDefined = isDefined;
     var Logitem = /** @class */ (function () {
         function Logitem(content) {
+            this.isinfo = false;
+            this.isok = false;
+            this.iserror = false;
             this.content = content;
         }
+        Logitem.prototype.info = function () {
+            this.isinfo = true;
+            return this;
+        };
+        Logitem.prototype.ok = function () {
+            this.isok = true;
+            return this;
+        };
+        Logitem.prototype.error = function () {
+            this.iserror = true;
+            return this;
+        };
         return Logitem;
     }());
     Misc.Logitem = Logitem;
@@ -345,6 +395,18 @@ var Misc;
         };
         Logger.prototype.reportText = function () {
             return this.items.slice().reverse().map(function (x) { return x.content; }).join("\n");
+        };
+        Logger.prototype.reportHtml = function () {
+            return this.items.slice().reverse().map(function (x) {
+                var content = x.content.replace(new RegExp("\\n", "g"), "<br>");
+                if (x.isinfo)
+                    content = "<font color=\"blue\">" + content + "</font>";
+                if (x.isok)
+                    content = "<font color=\"green\">" + content + "</font>";
+                if (x.iserror)
+                    content = "<font color=\"red\">" + content + "</font>";
+                return content;
+            }).join("<br>");
         };
         return Logger;
     }());
@@ -628,10 +690,6 @@ var Annotation = /** @class */ (function () {
 }());
 var BookUtils;
 (function (BookUtils) {
-    function isDefined(x) {
-        return ((x != undefined) && (x != null) && (x != "null"));
-    }
-    BookUtils.isDefined = isDefined;
     BookUtils.annotations = {
         "!!": new Annotation("!!").setColor("#00ff00").setBcol("#7fff7f").setPriority(10),
         "!": new Annotation("!").setColor("#007f00").setBcol("#afffaf").setPriority(9),
@@ -674,7 +732,7 @@ var BookPosition = /** @class */ (function () {
         return this;
     };
     BookPosition.prototype.getMove = function (san) {
-        if (!BookUtils.isDefined(this.moves[san])) {
+        if (!Misc.isDefined(this.moves[san])) {
             this.moves[san] = new BookMove(san);
         }
         return this.moves[san];
@@ -700,7 +758,7 @@ var Book = /** @class */ (function () {
         this.variant = _variant;
         this.name = _name;
         var stored = localStorage.getItem(this.storeid());
-        if (BookUtils.isDefined(stored)) {
+        if (Misc.isDefined(stored)) {
             var obj = JSON.parse(stored);
             this.parseObj(obj);
         }
@@ -728,7 +786,7 @@ var Book = /** @class */ (function () {
     };
     Book.prototype.getPosition = function (fen) {
         var tfen = this.truncfen(fen);
-        if (!BookUtils.isDefined(this.positions[tfen])) {
+        if (!Misc.isDefined(this.positions[tfen])) {
             this.positions[tfen] = new BookPosition(tfen);
         }
         return this.positions[tfen];
@@ -780,8 +838,39 @@ var Config;
         "atomic": Config.STANDARD_START_RAW_FEN,
         "fourplayer": FOUR_PLAYER_START_RAW_FEN
     };
+    function isSupportedVariant(variant) {
+        return Config.variantToVariantCode[variant] != undefined;
+    }
+    Config.isSupportedVariant = isSupportedVariant;
 })(Config || (Config = {}));
 // custom wrapper for the DOM
+var DomConfigElement = /** @class */ (function () {
+    function DomConfigElement() {
+    }
+    return DomConfigElement;
+}());
+var SizePx = /** @class */ (function (_super) {
+    __extends(SizePx, _super);
+    function SizePx(_px) {
+        var _this = _super.call(this) || this;
+        _this.px = _px;
+        return _this;
+    }
+    return SizePx;
+}(DomConfigElement));
+var DomConfig = /** @class */ (function () {
+    function DomConfig() {
+        this.elements = {};
+    }
+    DomConfig.prototype.add = function (id, e) {
+        this.elements[id] = e;
+        return this;
+    };
+    DomConfig.prototype.getPx = function (id) {
+        return this.elements[id].px;
+    };
+    return DomConfig;
+}());
 var HTMLElement_ = /** @class */ (function () {
     function HTMLElement_(kind) {
         this.e = document.createElement(kind);
@@ -792,6 +881,11 @@ var HTMLElement_ = /** @class */ (function () {
     };
     HTMLElement_.prototype.appendChild = function (child) {
         this.e.appendChild(child.e);
+        return this;
+    };
+    HTMLElement_.prototype.appendChilds = function (childs) {
+        var _this = this;
+        childs.map(function (child) { return _this.appendChild(child); });
         return this;
     };
     HTMLElement_.prototype.addEventListener = function (type, listener) {
@@ -811,6 +905,20 @@ var HTMLElement_ = /** @class */ (function () {
     HTMLElement_.prototype.html = function (content) {
         this.innerHTML = content;
         return this;
+    };
+    HTMLElement_.prototype.scrollTop = function (scrolltop) {
+        this.e.scrollTop = scrolltop;
+        return this;
+    };
+    HTMLElement_.prototype.getScrollTop = function () {
+        return this.e.scrollTop;
+    };
+    HTMLElement_.prototype.scrollLeft = function (scrollleft) {
+        this.e.scrollLeft = scrollleft;
+        return this;
+    };
+    HTMLElement_.prototype.getScrollLeft = function () {
+        return this.e.scrollLeft;
     };
     HTMLElement_.prototype.fontSize = function (fontsize) {
         this.e.style.fontSize = fontsize;
@@ -1317,6 +1425,509 @@ var HTMLSpanElement_ = /** @class */ (function (_super) {
     }
     return HTMLSpanElement_;
 }(HTMLElement_));
+var Player = /** @class */ (function () {
+    function Player() {
+        this.name = "?";
+        this.score = "0";
+    }
+    Player.prototype.fromJson = function (json) {
+        this.name = json.name;
+        this.score = json.score;
+    };
+    return Player;
+}());
+var Game = /** @class */ (function () {
+    function Game() {
+        this.result = "result";
+        this.id = "gameid";
+    }
+    Game.prototype.fromJson = function (json) {
+        this.i = json.i;
+        this.result = json.result;
+        this.id = json.id;
+        return this;
+    };
+    return Game;
+}());
+var PairingState = /** @class */ (function () {
+    function PairingState() {
+        this.players = [new Player(), new Player()];
+        this.games = [];
+    }
+    PairingState.prototype.pairingLabel = function (i) {
+        return this.players[i].name + " - " + this.players[1 - i].name;
+    };
+    return PairingState;
+}());
+var Pairing = /** @class */ (function () {
+    function Pairing(_parentbracket) {
+        this.HEIGHT = 60;
+        this.BUTTON_HEIGHT = 20;
+        this.LABEL_HEIGHT = 24;
+        this.GAME_HEIGHT = 30;
+        this.TOTAL_HEIGHT = this.HEIGHT + 40;
+        this.GAMES_EDIT_HEIGHT = 100;
+        this.WIDTH = 220;
+        this.LABEL_WIDTH = 150;
+        this.LABEL_PADDING = 4;
+        this.SCORE_WIDTH = 30;
+        this.RESULT_WIDTH = 100;
+        this.TOTAL_WIDTH = this.WIDTH + 110;
+        this.SHOW_GAMES_WIDTH = 600;
+        this.BAR_WIDTH = 8;
+        this.BAR_COLOR = "#7f7f7f";
+        this.state = new PairingState();
+        this.parentbracket = null;
+        this.parents = [null, null];
+        this.depth = 0;
+        this.index = 0;
+        this.child = null;
+        this.absindex = 0;
+        this.labels = [null, null];
+        this.scores = [null, null];
+        this.gamescores = [];
+        this.gameids = [];
+        this.parentbracket = _parentbracket;
+    }
+    Pairing.prototype.fromJson = function (json) {
+        for (var i in json.players) {
+            var playerjson = json.players[i];
+            this.state.players[i].fromJson(playerjson);
+        }
+        this.state.games = [];
+        for (var i in json.games) {
+            var gamejson = json.games[i];
+            this.state.games.push(new Game().fromJson(gamejson));
+        }
+    };
+    Pairing.prototype.createParents = function (currentchild, currentdepth, maxdepth, depthcounts) {
+        if (this.parentbracket.pairingregistry[this.depth] == undefined)
+            this.parentbracket.pairingregistry[this.depth] = {};
+        this.parentbracket.pairingregistry[this.depth][this.index] = this;
+        if (this.parentbracket.pairingstateregistry[this.depth] == undefined)
+            this.parentbracket.pairingstateregistry[this.depth] = {};
+        this.parentbracket.pairingstateregistry[this.depth][this.index] = this.state;
+        if (currentdepth > maxdepth)
+            return;
+        if (depthcounts[currentdepth] == undefined) {
+            depthcounts[currentdepth] = 0;
+        }
+        for (var i = 0; i < 2; i++) {
+            this.parents[i] = new Pairing(this.parentbracket);
+            this.parents[i].depth = currentdepth;
+            this.parents[i].index = depthcounts[currentdepth];
+            this.parents[i].child = currentchild;
+            this.parents[i].createParents(this.parents[i], currentdepth + 1, maxdepth, depthcounts);
+            depthcounts[currentdepth]++;
+        }
+    };
+    Pairing.prototype.middleIndex = function () {
+        return (Math.pow(2, this.depth) - 1) / 2;
+    };
+    Pairing.prototype.distFromMiddle = function () {
+        return this.index - this.middleIndex();
+    };
+    Pairing.prototype.distFromMiddleMagnified = function () {
+        return this.distFromMiddle() * Math.pow(2, (this.parentbracket.rounds - 1) - this.depth);
+    };
+    Pairing.prototype.totalHeigtMagnified = function () {
+        return this.TOTAL_HEIGHT * Math.pow(2, (this.parentbracket.rounds - 2) - this.depth);
+    };
+    Pairing.prototype.distFromMiddlePx = function () {
+        return this.distFromMiddleMagnified() * this.TOTAL_HEIGHT;
+    };
+    Pairing.prototype.maxMiddleIndex = function () {
+        return (Math.pow(2, this.parentbracket.rounds - 1) - 1) / 2;
+    };
+    Pairing.prototype.middlePx = function () {
+        return this.maxMiddleIndex() * this.TOTAL_HEIGHT;
+    };
+    Pairing.prototype.topPx = function () {
+        return this.middlePx() + this.distFromMiddlePx();
+    };
+    Pairing.prototype.leftPx = function () {
+        return (this.parentbracket.rounds - 1 - this.depth) * this.TOTAL_WIDTH;
+    };
+    Pairing.prototype.barMiddlePx = function () {
+        return this.topPx() + this.HEIGHT / 2;
+    };
+    Pairing.prototype.barMiddleTopPx = function () {
+        return this.barMiddlePx() - this.BAR_WIDTH / 2;
+    };
+    Pairing.prototype.barWidthPx = function () {
+        return (this.TOTAL_WIDTH - this.WIDTH) / 2;
+    };
+    Pairing.prototype.hasParent = function () {
+        return this.parents[0] != null;
+    };
+    Pairing.prototype.createElement = function () {
+        this.div = new HTMLDivElement_().
+            position("absolute").
+            topPx(this.topPx()).
+            leftPx(this.leftPx()).
+            widthPx(this.WIDTH).
+            heightPx(this.HEIGHT).
+            backgroundColor("#00ff00");
+        this.parentbracket.bracketdiv.appendChild(this.div);
+        if (this.child != null) {
+            var childbar = new HTMLDivElement_().
+                position("absolute").
+                topPx(this.barMiddleTopPx()).
+                leftPx(this.leftPx() + this.WIDTH).
+                widthPx(this.barWidthPx()).
+                heightPx(this.BAR_WIDTH).
+                backgroundColor(this.BAR_COLOR);
+            this.parentbracket.bracketdiv.appendChild(childbar);
+        }
+        if (this.hasParent()) {
+            var parentbar = new HTMLDivElement_().
+                position("absolute").
+                topPx(this.barMiddleTopPx()).
+                leftPx(this.leftPx() - this.barWidthPx()).
+                widthPx(this.barWidthPx()).
+                heightPx(this.BAR_WIDTH).
+                backgroundColor(this.BAR_COLOR);
+            this.parentbracket.bracketdiv.appendChild(parentbar);
+            var joinbar = new HTMLDivElement_().
+                position("absolute").
+                topPx(this.barMiddlePx() - this.totalHeigtMagnified() / 2 - this.BAR_WIDTH / 2).
+                leftPx(this.leftPx() - this.barWidthPx() - this.BAR_WIDTH).
+                widthPx(this.BAR_WIDTH).
+                heightPx(this.totalHeigtMagnified()).
+                backgroundColor(this.BAR_COLOR);
+            this.parentbracket.bracketdiv.appendChild(joinbar);
+        }
+        this.parents.map(function (p) {
+            if (p != null)
+                p.createElement();
+        });
+        for (var i = 0; i < 2; i++) {
+            var player = this.state.players[i];
+            this.labels[i] = (this.parentbracket.editmode ?
+                new HTMLInputElement_().
+                    setText(player.name).
+                    backgroundColor("#efefef")
+                :
+                    new HTMLLabelElement_().
+                        setText(player.name).
+                        paddingTopPx(this.LABEL_PADDING).
+                        paddingLeftPx(this.LABEL_PADDING));
+            this.labels[i].position("absolute").
+                topPx((i * 2 + 1) * this.HEIGHT / 4 - this.LABEL_HEIGHT / 2).
+                leftPx(3).
+                widthPx(this.LABEL_WIDTH).
+                heightPx(this.LABEL_HEIGHT);
+            this.div.appendChild(this.labels[i]);
+            this.scores[i] = (this.parentbracket.editmode ?
+                new HTMLInputElement_().
+                    setText(player.score).
+                    backgroundColor("#efefef")
+                :
+                    new HTMLLabelElement_().
+                        setText(player.score).
+                        paddingTopPx(this.LABEL_PADDING).
+                        paddingLeftPx(this.LABEL_PADDING));
+            this.scores[i].position("absolute").
+                topPx((i * 2 + 1) * this.HEIGHT / 4 - this.LABEL_HEIGHT / 2).
+                leftPx(8 + this.LABEL_WIDTH).
+                widthPx(this.SCORE_WIDTH).
+                heightPx(this.LABEL_HEIGHT);
+            this.div.appendChild(this.scores[i]);
+        }
+        var showgamesbutton = new HTMLButtonElement_().
+            value(">").
+            onmousedown(this.showgamesuttonpressed.bind(this)).
+            position("absolute").
+            topPx(this.showGamesButtonTopPx()).
+            leftPx(this.showGamesButtonLeftPx()).
+            heightPx(this.BUTTON_HEIGHT);
+        this.div.appendChild(showgamesbutton);
+    };
+    Pairing.prototype.showGamesButtonTopPx = function () {
+        return this.HEIGHT / 2 - this.BUTTON_HEIGHT / 2;
+    };
+    Pairing.prototype.showGamesButtonLeftPx = function () {
+        return this.LABEL_WIDTH + this.SCORE_WIDTH + 15;
+    };
+    Pairing.prototype.newgamebuttonpressed = function (i, e) {
+        var game = new Game();
+        game.i = i;
+        this.savegames();
+        this.parentbracket.save();
+        this.state.games.push(game);
+        this.parentbracket.showngames = null;
+        this.showgamesuttonpressed.bind(this)();
+    };
+    Pairing.prototype.deletegamebuttonpressed = function (gi, e) {
+        var newgames = [];
+        for (var i = 0; i < this.state.games.length; i++) {
+            if (i != gi)
+                newgames.push(this.state.games[i]);
+        }
+        this.state.games = newgames;
+        this.parentbracket.showngames = null;
+        this.showgamesuttonpressed.bind(this)();
+    };
+    Pairing.prototype.opengamebuttonpressed = function (gi, e) {
+        var id = this.state.games[gi].id;
+        var gui = Globals.gui;
+        gui.gameidtext.setText(id);
+        gui.gameloadbuttonpressed(null);
+    };
+    Pairing.prototype.savegames = function () {
+        for (var gi = 0; gi < this.state.games.length; gi++) {
+            this.state.games[gi].result = this.gamescores[gi].getText();
+            this.state.games[gi].id = this.gameids[gi].getText();
+        }
+    };
+    Pairing.prototype.savegamesbuttonpressed = function (e) {
+        this.savegames();
+        this.showgamesuttonpressed.bind(this)();
+    };
+    Pairing.prototype.showgamesuttonpressed = function (e) {
+        this.parentbracket.save();
+        if ((e != undefined) && (e == null))
+            this.parentbracket.showngames = null;
+        var show = this.parentbracket.showngames != this;
+        this.parentbracket.showngames = show ? this : null;
+        var sgd = this.parentbracket.showgamediv;
+        var numgames = this.state.games.length;
+        sgd.html("").widthPx(0).heightPx(0).leftPx(0).topPx(0);
+        if (!show)
+            return;
+        if (this.parentbracket.editmode) {
+            var editpanel = new HTMLDivElement_().
+                position("absolute").
+                topPx(this.topPx() + this.showGamesButtonTopPx() + 25).
+                leftPx(this.leftPx() + this.showGamesButtonLeftPx() - 20).
+                widthPx(this.SHOW_GAMES_WIDTH).
+                heightPx(this.GAMES_EDIT_HEIGHT).
+                backgroundColor("#ffff7f");
+            var savegamesbutton = new HTMLButtonElement_().
+                value("Save games").
+                onmousedown(this.savegamesbuttonpressed.bind(this));
+            editpanel.appendChilds([
+                savegamesbutton.marginPx(5),
+                new HTMLBRElement_(),
+                new HTMLBRElement_()
+            ]);
+            for (var i = 0; i < 2; i++) {
+                var newgamebutton = new HTMLButtonElement_().
+                    value("New " + this.state.pairingLabel(i)).
+                    onmousedown(this.newgamebuttonpressed.bind(this, i)).
+                    marginPx(5);
+                editpanel.appendChilds([
+                    newgamebutton
+                ]);
+            }
+            sgd.appendChild(editpanel);
+        }
+        var gamepanel = new HTMLDivElement_().
+            position("absolute").
+            topPx(this.topPx() + this.showGamesButtonTopPx() + 25 + (this.parentbracket.editmode ? this.GAMES_EDIT_HEIGHT + 10 : 0)).
+            leftPx(this.leftPx() + this.showGamesButtonLeftPx() - 20).
+            widthPx(this.SHOW_GAMES_WIDTH).
+            heightPx(this.state.games.length * this.GAME_HEIGHT).
+            backgroundColor("#ffff7f");
+        this.gamescores = [];
+        this.gameids = [];
+        for (var gi = 0; gi < numgames; gi++) {
+            var game = this.state.games[gi];
+            var deletegamebutton = new HTMLButtonElement_().
+                value("Delete").
+                onmousedown(this.deletegamebuttonpressed.bind(this, gi)).
+                marginPx(5);
+            var opengamebutton = new HTMLButtonElement_().
+                value("Open").
+                onmousedown(this.opengamebuttonpressed.bind(this, gi)).
+                marginPx(5);
+            var gdiv = new HTMLDivElement_().heightPx(this.GAME_HEIGHT);
+            var gamescoreinput = this.parentbracket.editmode ?
+                new HTMLInputElement_().
+                    setText(game.result).
+                    widthPx(this.RESULT_WIDTH).
+                    marginPx(5)
+                :
+                    new HTMLLabelElement_().
+                        setText(game.result).
+                        widthPx(this.RESULT_WIDTH).
+                        marginPx(5);
+            this.gamescores.push(gamescoreinput);
+            var gameidinput = new HTMLInputElement_().
+                setText(game.id).
+                widthPx(this.RESULT_WIDTH).
+                marginPx(5);
+            this.gameids.push(gameidinput);
+            gdiv.appendChilds([
+                opengamebutton,
+                new HTMLLabelElement_().
+                    setText(this.state.pairingLabel(game.i)).
+                    marginPx(5),
+                gamescoreinput
+            ]);
+            if (this.parentbracket.editmode)
+                gdiv.appendChilds([
+                    gameidinput,
+                    deletegamebutton
+                ]);
+            gamepanel.appendChild(gdiv);
+        }
+        sgd.appendChild(gamepanel);
+    };
+    return Pairing;
+}());
+var Bracket = /** @class */ (function () {
+    function Bracket(_rounds) {
+        if (_rounds === void 0) { _rounds = 5; }
+        this.showngames = null;
+        this.pairingstateregistry = {};
+        this.pairingregistry = {};
+        this.name = "default";
+        this.dragunderway = false;
+        this.editmode = true;
+        this.hidecontrols = false;
+        this.rounds = _rounds;
+        this.root = new Pairing(this);
+        this.root.createParents(this.root, 1, this.rounds - 1, {});
+        this.maindiv = new HTMLDivElement_();
+        this.tabroot = Globals.gui.tabs.getTabDivById("bracket");
+        this.tabroot.draggableBoolean(true).
+            addEventListener("dragstart", this.tabdragstart.bind(this)).
+            addEventListener("mousemove", this.tabmousemove.bind(this)).
+            addEventListener("mouseup", this.tabmouseup.bind(this));
+    }
+    Bracket.prototype.tabdragstart = function (e) {
+        e.preventDefault();
+        var me = e;
+        this.dragstart = new Vectors.ScreenVector(me.clientX, me.clientY);
+        this.scrollstart = new Vectors.ScreenVector(this.tabroot.getScrollLeft(), this.tabroot.getScrollTop());
+        this.dragunderway = true;
+    };
+    Bracket.prototype.tabmousemove = function (e) {
+        var me = e;
+        if (this.dragunderway) {
+            var dragd = new Vectors.ScreenVector(me.clientX, me.clientY).Minus(this.dragstart);
+            var scrollcurrent = this.scrollstart.Minus(dragd);
+            this.tabroot.scrollTop(scrollcurrent.y);
+            this.tabroot.scrollLeft(scrollcurrent.x);
+        }
+    };
+    Bracket.prototype.tabmouseup = function (e) {
+        if (this.dragunderway) {
+            this.dragunderway = false;
+        }
+    };
+    Bracket.prototype.createElement = function () {
+        //localStorage.setItem(this.storeid(),"null")
+        this.maindiv.html("");
+        var savebutton = new HTMLButtonElement_().
+            value("Save").
+            onmousedown(this.savebuttonpressed.bind(this));
+        var loadbutton;
+        loadbutton = new HTMLButtonElement_().
+            value("Load").
+            onmousedown(this.loadbuttonpressed.bind(this));
+        if (this.storedjson() == null) {
+            loadbutton = new HTMLLabelElement_().setText("Nothing saved yet");
+        }
+        var freezebutton = new HTMLButtonElement_().
+            value("Freeze").
+            onmousedown(this.freezebuttonpressed.bind(this));
+        var editbutton = new HTMLButtonElement_().
+            value("Edit").
+            onmousedown(this.editbuttonpressed.bind(this));
+        if (!this.hidecontrols) {
+            if (this.editmode) {
+                this.maindiv.appendChilds([
+                    freezebutton,
+                    savebutton,
+                    loadbutton
+                ]);
+            }
+            else {
+                this.maindiv.appendChilds([
+                    editbutton,
+                    loadbutton
+                ]);
+            }
+        }
+        this.bracketdiv = new HTMLDivElement_().position("relative");
+        this.root.createElement();
+        this.showgamediv = new HTMLDivElement_().
+            position("absolute");
+        this.bracketdiv.appendChild(this.showgamediv);
+        this.maindiv.appendChild(this.bracketdiv);
+        this.maindiv.widthPx(this.root.TOTAL_WIDTH * this.rounds + 1000);
+        this.maindiv.heightPx(this.root.TOTAL_HEIGHT * Math.pow(2, this.rounds - 1) + 1000);
+        return this.maindiv;
+    };
+    Bracket.prototype.storedjson = function () {
+        var item = localStorage.getItem(this.storeid());
+        if ((item == undefined) || (item == null) || (item == "null"))
+            return null;
+        return item;
+    };
+    Bracket.prototype.storeid = function () {
+        return "bracket_" + this.name;
+    };
+    Bracket.prototype.save = function () {
+        if (!this.editmode)
+            return;
+        for (var ditem in this.pairingregistry)
+            for (var iitem in this.pairingregistry[ditem]) {
+                var pairing = this.pairingregistry[ditem][iitem];
+                for (var i = 0; i < 2; i++) {
+                    var player = this.pairingstateregistry[ditem][iitem].players[i];
+                    player.name = pairing.labels[i].getText();
+                    player.score = pairing.scores[i].getText();
+                }
+            }
+        this.json = JSON.stringify(this.pairingstateregistry);
+        localStorage.setItem(this.storeid(), this.json);
+        Globals.gui.srctext.setText(this.json);
+    };
+    Bracket.prototype.savebuttonpressed = function (e) {
+        this.save();
+        Globals.gui.tabs.setSelected("src");
+    };
+    Bracket.prototype.load = function (setjson) {
+        if (setjson === void 0) { setjson = null; }
+        var storedjson = setjson != null ? setjson : this.storedjson();
+        if (storedjson != null) {
+            var json = JSON.parse(storedjson);
+            for (var ditem in json)
+                for (var iitem in json[ditem]) {
+                    var pairingjson = json[ditem][iitem];
+                    this.pairingregistry[ditem][iitem].fromJson(pairingjson);
+                }
+            Globals.gui.srctext.setText(storedjson);
+        }
+        this.createElement();
+    };
+    Bracket.prototype.loadbuttonpressed = function (e) {
+        this.load();
+        this.createElement();
+    };
+    Bracket.prototype.freezebuttonpressed = function (e) {
+        this.save();
+        this.showngames = null;
+        this.editmode = false;
+        this.createElement();
+    };
+    Bracket.prototype.editbuttonpressed = function (e) {
+        this.editmode = true;
+        this.showngames = null;
+        this.createElement();
+    };
+    return Bracket;
+}());
+var Config;
+(function (Config) {
+    Config.GuiConfig = new DomConfig().
+        add("CONTROL_BUTTON_WIDTH", new SizePx(24)).
+        add("PADDING", new SizePx(3)).
+        add("CONTROL_BUTTON_PADDING_LEFT", new SizePx(3));
+})(Config || (Config = {}));
 var GUIState = /** @class */ (function () {
     function GUIState() {
         this.variant = localStorage.getItem("guistate_variant");
@@ -1354,58 +1965,165 @@ var GUIState = /** @class */ (function () {
 }());
 var GUI = /** @class */ (function () {
     function GUI() {
+        this.config = Config.GuiConfig;
         this.LABEL_BCOL = "#efefef";
-        this.PADDING = 3;
-        this.CONTROL_BUTTON_WIDTH = 24;
-        this.CONTROL_BUTTON_PADDING_LEFT = 3;
         this.book = null;
+        this.bracket = null;
         this.state = new GUIState();
+        this.firstdraw = true;
+        this.bracketjsonasset = new TextAsset("bracket.json");
         this.rndon = false;
         this.root = new HTMLDivElement_();
         document.body.appendChild(this.root.e);
     }
     GUI.prototype.log = function (li) {
         this.logger.log(li);
-        var text = "<pre>" + this.logger.reportText() + "</pre>";
+        //let text="<pre>"+this.logger.reportText()+"</pre>"        
+        var html = this.logger.reportHtml();
         this.tabs.getTabDivById("log").fontFamily("monospace");
-        this.tabs.setContent("log", text);
+        this.tabs.setContent("log", html);
     };
-    GUI.prototype.draw = function () {
-        var _this = this;
-        this.logger = new Misc.Logger();
-        this.root.
-            html("");
-        var table = new HTMLTableElement_().
-            borderCollapse("separate").
-            borderSpacingPx(6).
-            borderPx(3).
-            borderStyle("solid").
-            borderColor("#dfdfdf").
-            marginPx(5).
-            backgroundColor("#efefef");
-        var tr1 = new HTMLTableRowElement_();
-        var tr2 = new HTMLTableRowElement_();
-        table.appendChild(tr1);
-        table.appendChild(tr2);
-        var td11 = new HTMLTableColElement_();
-        tr1.appendChild(td11);
-        var td12 = new HTMLTableColElement_().verticalAlign("top");
-        tr1.appendChild(td12);
+    GUI.prototype.logstr = function (str) {
+        this.log(new Misc.Logitem(str));
+    };
+    // create elements
+    GUI.prototype.createEngineControlPanel = function () {
+        this.econtrolpanel = new HTMLDivElement_();
+        var startenginebutton = new HTMLButtonElement_().
+            value(">").
+            onmousedown(this.startenginebuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH")).
+            paddingLeftPx(this.config.getPx("CONTROL_BUTTON_PADDING_LEFT"));
+        var makeanalyzedmovebutton = new HTMLButtonElement_().
+            value("*").
+            onmousedown(this.makeanalyzedmovebuttonpressed.bind(this, false)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH")).
+            paddingLeftPx(this.config.getPx("CONTROL_BUTTON_PADDING_LEFT"));
+        var makeandstoreanalyzedmovebutton = new HTMLButtonElement_().
+            value("*!").
+            onmousedown(this.makeanalyzedmovebuttonpressed.bind(this, true)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH")).
+            paddingLeftPx(this.config.getPx("CONTROL_BUTTON_PADDING_LEFT"));
+        var stopenginebutton = new HTMLButtonElement_().
+            value("_").
+            onmousedown(this.stopenginebuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH")).
+            paddingLeftPx(this.config.getPx("CONTROL_BUTTON_PADDING_LEFT"));
+        var restartenginebutton = new HTMLButtonElement_().
+            value("!").
+            onmousedown(this.restartenginebuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH")).
+            paddingLeftPx(this.config.getPx("CONTROL_BUTTON_PADDING_LEFT"));
+        var connectenginebutton = new HTMLButtonElement_().
+            value("Connect").
+            onmousedown(this.connectenginebuttonpressed.bind(this));
+        var rndbutton = new HTMLButtonElement_().
+            value("Rnd").
+            onmousedown(this.rndbuttonpressed.bind(this));
+        this.econtrolpanel.appendChilds([
+            startenginebutton,
+            makeanalyzedmovebutton,
+            makeandstoreanalyzedmovebutton,
+            stopenginebutton,
+            restartenginebutton,
+            restartenginebutton,
+            connectenginebutton,
+            rndbutton
+        ]);
+    };
+    GUI.prototype.createControlPanel = function () {
+        this.controlpanel = new HTMLDivElement_();
+        var variantcombo = new ComboBox_().
+            setOptions(Config.variantToDisplayName).
+            setSelected(this.state.hasVariant() ? this.state._variant : "standard").
+            onChange(this.variantChanged.bind(this));
+        var flipbutton = new HTMLButtonElement_().
+            value("F").
+            onmousedown(this.flipbuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH"));
+        var resetbutton = new HTMLButtonElement_().
+            value("R").
+            onmousedown(this.resetbuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH"));
+        var tobeginbutton = new HTMLButtonElement_().
+            value("|<").
+            onmousedown(this.tobeginbuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH")).
+            paddingLeftPx(this.config.getPx("CONTROL_BUTTON_PADDING_LEFT"));
+        var backbutton = new HTMLButtonElement_().
+            value("<").
+            onmousedown(this.backbuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH")).
+            paddingLeftPx(this.config.getPx("CONTROL_BUTTON_PADDING_LEFT"));
+        var forwardbutton = new HTMLButtonElement_().
+            value(">").
+            onmousedown(this.forwardbuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH"));
+        var toendbutton = new HTMLButtonElement_().
+            value(">|").
+            onmousedown(this.toendbuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH")).
+            paddingLeftPx(this.config.getPx("CONTROL_BUTTON_PADDING_LEFT"));
+        var deletebutton = new HTMLButtonElement_().
+            value("X").
+            onmousedown(this.deletebuttonpressed.bind(this)).
+            widthPx(this.config.getPx("CONTROL_BUTTON_WIDTH")).
+            paddingLeftPx(this.config.getPx("CONTROL_BUTTON_PADDING_LEFT"));
+        this.saninputtext = new HTMLInputElement_();
+        this.saninputtext.widthPx(50);
+        var makesanbutton = new HTMLButtonElement_().
+            value("M").
+            onmousedown(this.makesanbuttonpressed.bind(this));
+        var setfromfenbutton = new HTMLButtonElement_().
+            value("F").
+            onmousedown(this.setfromfenbuttonpressed.bind(this));
+        var setfrompgnbutton = new HTMLButtonElement_().
+            value("P").
+            onmousedown(this.setfrompgnbuttonpressed.bind(this));
+        this.controlpanel.appendChilds([
+            variantcombo,
+            flipbutton,
+            resetbutton,
+            tobeginbutton,
+            backbutton,
+            forwardbutton,
+            toendbutton,
+            deletebutton,
+            this.saninputtext,
+            makesanbutton,
+            setfromfenbutton,
+            setfrompgnbutton
+        ]);
+    };
+    GUI.prototype.createTabs = function () {
         this.tabs = new TabPane_("tabs", Config.PREFERRED_TAB_SIZE, Config.PREFERRED_BOARD_SIZE, [
             new Tab("pgn", "Pgn"),
             new Tab("book", "Book"),
             new Tab("moves", "Moves"),
             new Tab("engine", "Engine"),
+            new Tab("game", "Game"),
+            new Tab("bracket", "Bracket"),
+            new Tab("src", "Src"),
             new Tab("log", "Log")
         ]);
-        td12.appendChild(this.tabs);
-        var td21 = new HTMLTableColElement_();
-        tr2.appendChild(td21);
-        var td22 = new HTMLTableColElement_();
-        tr2.appendChild(td22);
-        this.fentext = new HTMLInputElement_();
-        this.fentext.widthPx(Config.PREFERRED_TAB_SIZE).fontFamily("monospace");
-        td22.appendChild(this.fentext);
+        this.createPgnDiv();
+        this.tabs.setElement_("pgn", this.pgndiv);
+        this.createEngineDiv();
+        this.tabs.setElement_("engine", this.enginediv);
+        this.createBookDiv();
+        this.tabs.setElement_("book", this.bookdiv);
+        this.createGameDiv();
+        this.tabs.setElement_("game", this.gamediv);
+        this.createBracketDiv();
+        this.tabs.setElement_("bracket", this.bracketdiv);
+        this.createSrcDiv();
+        this.tabs.setElement_("src", this.srcdiv);
+    };
+    GUI.prototype.createEngineDiv = function () {
+        this.enginediv = new HTMLDivElement_;
+        this.enginediv.fontFamily("monospace");
+    };
+    GUI.prototype.createPgnDiv = function () {
         this.pgndiv = new HTMLDivElement_;
         this.pgntext = new HTMLTextAreaElement_();
         this.pgntext.
@@ -1419,18 +2137,16 @@ var GUI = /** @class */ (function () {
             onmousedown(this.pgneditbuttonpressed.bind(this));
         this.pgndiv.appendChild(new HTMLLabelElement_().setText("Header name:").
             backgroundColor(this.LABEL_BCOL).
-            paddingPx(this.PADDING));
+            paddingPx(this.config.getPx("PADDING")));
         this.pgndiv.appendChild(this.pgnkeytext);
         this.pgndiv.appendChild(new HTMLLabelElement_().setText("Header value:").
             backgroundColor(this.LABEL_BCOL).
-            paddingPx(this.PADDING));
+            paddingPx(this.config.getPx("PADDING")));
         this.pgndiv.appendChild(this.pgnvaluetext);
         this.pgndiv.appendChild(pgneditbutton);
         this.pgndiv.appendChild(this.pgntext);
-        this.tabs.setElement_("pgn", this.pgndiv);
-        this.enginediv = new HTMLDivElement_;
-        this.enginediv.fontFamily("monospace");
-        this.tabs.setElement_("engine", this.enginediv);
+    };
+    GUI.prototype.createBookDiv = function () {
         this.bookdiv = new HTMLDivElement_();
         var addmovebutton = new HTMLButtonElement_().
             value("+ M").
@@ -1444,135 +2160,130 @@ var GUI = /** @class */ (function () {
         var delallmovesbutton = new HTMLButtonElement_().
             value("- P").
             onmousedown(this.delallmovesbuttonpressed.bind(this));
-        this.bookdiv.appendChild(addmovebutton);
-        this.bookdiv.appendChild(addmovebackbutton);
-        this.bookdiv.appendChild(delbookmovebutton);
-        this.bookdiv.appendChild(delallmovesbutton);
+        this.bookdiv.appendChilds([
+            addmovebutton,
+            addmovebackbutton,
+            delbookmovebutton,
+            delallmovesbutton
+        ]);
         this.bookcontentdiv = new HTMLDivElement_();
         this.bookdiv.appendChild(this.bookcontentdiv);
-        this.tabs.setElement_("book", this.bookdiv);
+    };
+    GUI.prototype.createGameDiv = function () {
+        this.gamediv = new HTMLDivElement_();
+        var gameidlabel = new HTMLLabelElement_().setText("Lichess game id : ");
+        this.gameidtext = new HTMLInputElement_();
+        this.gameidtext.widthPx(300);
+        var gameloadbutton = new HTMLButtonElement_().
+            value("Load").
+            onmousedown(this.gameloadbuttonpressed.bind(this));
+        this.gamediv.appendChilds([
+            gameidlabel,
+            this.gameidtext,
+            gameloadbutton
+        ]);
+    };
+    GUI.prototype.createBracketDiv = function () {
+        this.bracketdiv = new HTMLDivElement_();
+    };
+    GUI.prototype.createSrcDiv = function () {
+        this.srcdiv = new HTMLDivElement_;
+        this.srctext = new HTMLTextAreaElement_();
+        this.srctext.
+            widthPx(Config.PREFERRED_TAB_SIZE - 25).
+            heightPx(Config.PREFERRED_BOARD_SIZE - 45);
+        this.srcdiv.appendChild(this.srctext);
+    };
+    GUI.prototype.draw = function () {
+        //////////////////////////////////////////////////////////
+        var _this = this;
+        this.startup = Globals.startup.asJson();
+        //////////////////////////////////////////////////////////
+        this.logger = new Misc.Logger();
+        //////////////////////////////////////////////////////////
+        this.root.
+            html("");
+        //////////////////////////////////////////////////////////
+        // table
+        var table = new HTMLTableElement_().
+            borderCollapse("separate").
+            borderSpacingPx(6).
+            borderPx(3).
+            borderStyle("solid").
+            borderColor("#dfdfdf").
+            marginPx(5).
+            backgroundColor("#efefef");
+        var tr1 = new HTMLTableRowElement_();
+        var tr2 = new HTMLTableRowElement_();
+        var tr3 = new HTMLTableRowElement_();
+        table.appendChilds([tr1, tr2, tr3]);
+        var td11 = new HTMLTableColElement_();
+        var td12 = new HTMLTableColElement_().verticalAlign("top");
+        tr1.appendChilds([td11, td12]);
+        var td21 = new HTMLTableColElement_();
+        var td22 = new HTMLTableColElement_();
+        tr2.appendChilds([td21, td22]);
+        var td31 = new HTMLTableColElement_();
+        tr3.appendChilds([td31]);
+        //////////////////////////////////////////////////////////
         this.wboardroot = new HTMLDivElement_();
         td11.appendChild(this.wboardroot);
-        var controlpanel = new HTMLDivElement_();
-        var variantcombo = new ComboBox_().
-            setOptions(Config.variantToDisplayName).
-            setSelected(this.state.hasVariant() ? this.state._variant : "standard").
-            onChange(this.variantChanged.bind(this));
-        var flipbutton = new HTMLButtonElement_().
-            value("F").
-            onmousedown(this.flipbuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH);
-        var resetbutton = new HTMLButtonElement_().
-            value("R").
-            onmousedown(this.resetbuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH);
-        var tobeginbutton = new HTMLButtonElement_().
-            value("|<").
-            onmousedown(this.tobeginbuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH).
-            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
-        var backbutton = new HTMLButtonElement_().
-            value("<").
-            onmousedown(this.backbuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH).
-            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
-        var forwardbutton = new HTMLButtonElement_().
-            value(">").
-            onmousedown(this.forwardbuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH);
-        var toendbutton = new HTMLButtonElement_().
-            value(">|").
-            onmousedown(this.toendbuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH).
-            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
-        var deletebutton = new HTMLButtonElement_().
-            value("X").
-            onmousedown(this.deletebuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH).
-            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
-        this.saninputtext = new HTMLInputElement_();
-        this.saninputtext.widthPx(50);
-        var makesanbutton = new HTMLButtonElement_().
-            value("M").
-            onmousedown(this.makesanbuttonpressed.bind(this));
-        var setfromfenbutton = new HTMLButtonElement_().
-            value("F").
-            onmousedown(this.setfromfenbuttonpressed.bind(this));
-        var setfrompgnbutton = new HTMLButtonElement_().
-            value("P").
-            onmousedown(this.setfrompgnbuttonpressed.bind(this));
-        controlpanel.appendChild(variantcombo);
-        controlpanel.appendChild(flipbutton);
-        controlpanel.appendChild(resetbutton);
-        controlpanel.appendChild(tobeginbutton);
-        controlpanel.appendChild(backbutton);
-        controlpanel.appendChild(forwardbutton);
-        controlpanel.appendChild(toendbutton);
-        controlpanel.appendChild(deletebutton);
-        controlpanel.appendChild(this.saninputtext);
-        controlpanel.appendChild(makesanbutton);
-        controlpanel.appendChild(setfromfenbutton);
-        controlpanel.appendChild(setfrompgnbutton);
-        td21.appendChild(controlpanel);
-        var econtrolpanel = new HTMLDivElement_();
-        var tr3 = new HTMLTableRowElement_();
-        table.appendChild(tr3);
-        var td31 = new HTMLTableColElement_();
-        tr3.appendChild(td31);
-        var startenginebutton = new HTMLButtonElement_().
-            value(">").
-            onmousedown(this.startenginebuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH).
-            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
-        var makeanalyzedmovebutton = new HTMLButtonElement_().
-            value("*").
-            onmousedown(this.makeanalyzedmovebuttonpressed.bind(this, false)).
-            widthPx(this.CONTROL_BUTTON_WIDTH).
-            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
-        var makeandstoreanalyzedmovebutton = new HTMLButtonElement_().
-            value("*!").
-            onmousedown(this.makeanalyzedmovebuttonpressed.bind(this, true)).
-            widthPx(this.CONTROL_BUTTON_WIDTH).
-            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
-        var stopenginebutton = new HTMLButtonElement_().
-            value("_").
-            onmousedown(this.stopenginebuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH).
-            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
-        var restartenginebutton = new HTMLButtonElement_().
-            value("!").
-            onmousedown(this.restartenginebuttonpressed.bind(this)).
-            widthPx(this.CONTROL_BUTTON_WIDTH).
-            paddingLeftPx(this.CONTROL_BUTTON_PADDING_LEFT);
-        var connectenginebutton = new HTMLButtonElement_().
-            value("Connect").
-            onmousedown(this.connectenginebuttonpressed.bind(this));
-        var rndbutton = new HTMLButtonElement_().
-            value("Rnd").
-            onmousedown(this.rndbuttonpressed.bind(this));
-        econtrolpanel.appendChild(startenginebutton);
-        econtrolpanel.appendChild(makeanalyzedmovebutton);
-        econtrolpanel.appendChild(makeandstoreanalyzedmovebutton);
-        econtrolpanel.appendChild(stopenginebutton);
-        econtrolpanel.appendChild(restartenginebutton);
-        econtrolpanel.appendChild(restartenginebutton);
-        econtrolpanel.appendChild(connectenginebutton);
-        econtrolpanel.appendChild(rndbutton);
-        td31.appendChild(econtrolpanel);
+        this.createTabs();
+        td12.appendChild(this.tabs);
+        this.createControlPanel();
+        td21.appendChild(this.controlpanel);
+        this.fentext = new HTMLInputElement_();
+        this.fentext.widthPx(Config.PREFERRED_TAB_SIZE).fontFamily("monospace");
+        td22.appendChild(this.fentext);
+        this.createEngineControlPanel();
+        td31.appendChild(this.econtrolpanel);
+        //////////////////////////////////////////////////////////
         this.analyzer = new Analysis.Analyzer();
         this.analyzer.log = this.log.bind(this);
+        //////////////////////////////////////////////////////////
+        this.bracket = new Bracket();
+        this.bracket.load();
+        //////////////////////////////////////////////////////////
         setTimeout((function (e) {
             wboard.setRoot(gui.wboardroot);
             _this.setVariant();
             wboard.draw();
+            _this.bracketdiv.appendChild(_this.bracket.createElement());
             _this.root.appendChild(table);
             Globals.log = _this.log.bind(_this);
+            _this.doStartup();
         }).bind(this), 0);
+        //////////////////////////////////////////////////////////
+    };
+    GUI.prototype.brackeJsonLoaded = function () {
+        this.bracket.hidecontrols = true;
+        this.bracket.editmode = false;
+        this.bracket.load(this.bracketjsonasset.text);
+    };
+    GUI.prototype.doStartup = function () {
+        if (this.firstdraw) {
+            this.firstdraw = false;
+            var su = this.startup;
+            console.log(su);
+            if (Misc.isDefined(su.selectedTab)) {
+                this.tabs.setSelected(su.selectedTab);
+            }
+            if (Misc.isDefined(su.setBracketJson)) {
+                if (su.setBracketJson) {
+                    new AssetLoader().
+                        add(this.bracketjsonasset).
+                        setcallback(this.brackeJsonLoaded.bind(this)).
+                        load();
+                }
+            }
+        }
     };
     GUI.prototype.setVariant = function (variant) {
         if (variant === void 0) { variant = this.state._variant; }
         if ((variant == undefined) || (variant == null) || (variant == "null"))
             variant = "standard";
+        if (!Config.isSupportedVariant(variant))
+            return false;
         this.state.variant = variant;
         Globals.wboard.dosetVariant(variant, false);
         if (this.state.hasPgn()) {
@@ -1580,6 +2291,7 @@ var GUI = /** @class */ (function () {
         }
         this.book = new Book(this.state._variant, "default");
         Globals.wboard.draw();
+        return true;
     };
     GUI.prototype.variantChanged = function (e) {
         var t = e.target;
@@ -1696,6 +2408,60 @@ var GUI = /** @class */ (function () {
             this.makerandom();
         }
     };
+    GUI.prototype.ongameload = function (textasset, url) {
+        this.log(new Misc.Logitem("game loaded " + url).ok());
+        var json = textasset.asJson();
+        var variant = json.variant;
+        if (!this.setVariant(variant)) {
+            this.log(new Misc.Logitem("error setting up game: unsupported variant " + variant).error());
+            return;
+        }
+        var moves = json.moves;
+        this.logstr(moves);
+        Globals.wboard.setFromPgn(moves);
+        var players = json.players;
+        var white = players.white;
+        var black = players.black;
+        Globals.wboard.editPgn("White", white.userId);
+        Globals.wboard.editPgn("Black", black.userId);
+        var gameid = json.id;
+        Globals.wboard.editPgn("GameId", gameid);
+        var gameurl = json.url;
+        Globals.wboard.editPgn("Url", gameurl);
+        var rated = json.rated;
+        Globals.wboard.editPgn("Rated", "" + rated);
+        var speed = json.speed;
+        Globals.wboard.editPgn("Speed", speed);
+        var createdat = json.createdAt;
+        Globals.wboard.editPgn("CreatedAt", new Date(createdat).toLocaleString());
+        var lastmoveat = json.lastMoveAt;
+        Globals.wboard.editPgn("LastMoveAt", new Date(lastmoveat).toLocaleString());
+        var status = json.status;
+        Globals.wboard.editPgn("Status", status);
+        var turns = json.turns;
+        Globals.wboard.editPgn("Turns", turns);
+        var winner = json.winner;
+        Globals.wboard.editPgn("Winner", winner);
+        if (winner == "white")
+            Globals.wboard.editPgn("WinnerName", white.userId);
+        if (winner == "black")
+            Globals.wboard.editPgn("WinnerName", black.userId);
+        Globals.wboard.draw();
+        this.tabs.setSelected("pgn");
+    };
+    GUI.prototype.gameloadbuttonpressed = function (e) {
+        var gameid = this.gameidtext.getText();
+        this.gameidtext.setText("");
+        var url = "https://lichess.org/api/game/" + gameid + "?with_moves=1";
+        this.tabs.setSelected("log");
+        this.log(new Misc.Logitem("loading game " + url).info());
+        var textasset = new TextAsset(url);
+        new AssetLoader().
+            add(textasset).
+            setcallback(this.ongameload.bind(this, textasset, url)).
+            seterrorcallback(this.log.bind(this, new Misc.Logitem("error loading game: " + url + " timed out").error())).
+            load();
+    };
     return GUI;
 }());
 var wBoard = /** @class */ (function (_super) {
@@ -1727,6 +2493,7 @@ var wBoard = /** @class */ (function (_super) {
         this.inbuff = this.memview(this.exports._inbuffaddr(), this.exports._inbuffsize());
         this.inbuff2 = this.memview(this.exports._inbuff2addr(), this.exports._inbuffsize());
         this.outbuff = this.memview(this.exports._outbuffaddr(), this.exports._outbuffsize());
+        this.exports._initModule();
         this.setVariant("standard");
         this.isready = true;
     };
@@ -1763,13 +2530,21 @@ var wBoard = /** @class */ (function (_super) {
         this.reset();
         this.draw();
     };
-    wBoard.prototype.setVariant = function (variant) {
+    wBoard.prototype.initVariant = function (variant) {
+        var vc = Config.variantToVariantCode[variant];
+        this.exports._initVariant(vc);
+    };
+    wBoard.prototype.initVariantManual = function (variant) {
         var rawfen = Config.startRawFens[variant];
         var vc = Config.variantToVariantCode[variant];
         this.exports._setVariant(vc);
         this.setFromRawFen(rawfen);
         this.createRegistries();
         this.reset();
+    };
+    wBoard.prototype.setVariant = function (variant) {
+        this.initVariant(variant);
+        //this.initVariantManual(variant)                
     };
     wBoard.prototype.dosetVariant = function (variant, storepgn) {
         if (storepgn === void 0) { storepgn = true; }
@@ -1800,7 +2575,7 @@ var wBoard = /** @class */ (function (_super) {
     wBoard.prototype.sortedLegalSanList = function () {
         var t = new Misc.Timer("sorted legal sans", Globals.log);
         this.exports._sortedLegalSanListMain();
-        t.report();
+        //t.report()
         return this.outbuff.toString();
     };
     wBoard.prototype.sanclicked = function (san, e) {
@@ -1840,7 +2615,7 @@ var wBoard = /** @class */ (function (_super) {
         var t = new Misc.Timer("set from pgn", Globals.log);
         this.inbuff.strCpy(pgn);
         this.exports._setFromPgnMain();
-        t.report();
+        //t.report()
     };
     wBoard.prototype.makeRandomMove = function () {
         var sanlist = this.sortedLegalSanList();
@@ -2072,7 +2847,7 @@ var wBoard = /** @class */ (function (_super) {
         }
         this.dragz = wBoard.PIECE_Z_INDEX + 1;
         this.showBookPage();
-        t.report();
+        //t.report()
     };
     wBoard.prototype.piecedragstart = function (sq, pdiv, e) {
         var me = e;
@@ -2196,10 +2971,12 @@ var Globals;
 (function (Globals) {
     Globals.gui = new GUI();
     Globals.wboard = new wBoard();
+    Globals.startup = new TextAsset("startup.json");
     Globals.log = function (li) { };
 })(Globals || (Globals = {}));
 var gui = Globals.gui;
 var wboard = Globals.wboard;
+var startup = Globals.startup;
 function main() {
     gui.draw();
 }
@@ -2207,6 +2984,7 @@ function mainloader() {
     //localStorage.clear()
     new AssetLoader().
         add(wboard).
+        add(startup).
         setcallback(main).
         load();
 }
