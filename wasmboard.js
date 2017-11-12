@@ -3348,7 +3348,7 @@ var Globals;
 (function (Globals) {
     Globals.gui = new GUI();
     Globals.wboard = new wBoard();
-    Globals.startup = new TextAsset("startup.json?v2");
+    Globals.startup = new TextAsset("startup.json?v3");
     Globals.log = function (li) { };
 })(Globals || (Globals = {}));
 var gui = Globals.gui;
