@@ -239,3 +239,9 @@ void reportLastMoveSan(){
 	}
 	_strcpys(b.current->gensan,outbuff,MAX_SAN_LENGTH);
 }
+
+void getPgnHeader(){
+	_strcpys(inbuff,headers.key,MAX_HEADER_KEY_SIZE);
+	getHeader();
+	_strcpys(headers.value,outbuff,MAX_HEADER_VALUE_SIZE);
+}

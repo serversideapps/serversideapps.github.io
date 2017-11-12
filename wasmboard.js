@@ -360,6 +360,34 @@ var Misc;
         return ((x != undefined) && (x != null) && (x != "null"));
     }
     Misc.isDefined = isDefined;
+    function nbr(content) {
+        return content.
+            replace(new RegExp(" ", "g"), "&nbsp;").
+            replace(new RegExp("\\-", "g"), "&#8209;");
+    }
+    Misc.nbr = nbr;
+    // from: https://stackoverflow.com/questions/6312993/javascript-seconds-to-time-string-with-format-hhmmss
+    function formatDurationSeconds(sec_num) {
+        sec_num = Math.round(sec_num);
+        var hours = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+        var seconds = sec_num - (hours * 3600) - (minutes * 60);
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        return hours + ':' + minutes + ':' + seconds;
+    }
+    Misc.formatDurationSeconds = formatDurationSeconds;
+    function formatDurationMilliSeconds(millisec_num) {
+        return formatDurationSeconds(millisec_num / 1000);
+    }
+    Misc.formatDurationMilliSeconds = formatDurationMilliSeconds;
     var Logitem = /** @class */ (function () {
         function Logitem(content) {
             this.isinfo = false;
@@ -797,9 +825,116 @@ var Book = /** @class */ (function () {
     };
     return Book;
 }());
+var LichessGame = /** @class */ (function () {
+    function LichessGame(_gameid) {
+        if (_gameid === void 0) { _gameid = ""; }
+        this.pgnHeaders = {};
+        this.moves = "";
+        this.result = "result";
+        this.gameid = _gameid;
+    }
+    LichessGame.prototype.url = function () {
+        var url = "https://lichess.org/api/game/" + this.gameid + "?with_moves=1";
+        return url;
+    };
+    LichessGame.prototype.onLoad = function () {
+        this.fromTextAsset(this.textasset);
+        this.callback();
+    };
+    LichessGame.prototype.errorLogitem = function () {
+        return new Misc.Logitem("error loading game: " + this.url() + " timed out").error();
+    };
+    LichessGame.prototype.infoLogitem = function () {
+        return new Misc.Logitem("loading game " + this.url()).info();
+    };
+    LichessGame.prototype.okLogitem = function () {
+        return new Misc.Logitem("game loaded " + this.url()).ok();
+    };
+    LichessGame.prototype.localAvailableLogitem = function () {
+        return new Misc.Logitem("local version is available for " + this.url()).info();
+    };
+    LichessGame.prototype.loadThen = function (_callback, errorcallback) {
+        this.callback = _callback;
+        this.textasset = new TextAsset(this.url());
+        new AssetLoader().
+            add(this.textasset).
+            setcallback(this.onLoad.bind(this)).
+            seterrorcallback(errorcallback).
+            load();
+    };
+    LichessGame.prototype.fromSerializedJson = function (json) {
+        this.gameid = json.gameid;
+        this.pgnHeaders = json.pgnHeaders;
+        this.moves = json.moves;
+        this.result = json.result;
+        return this;
+    };
+    LichessGame.prototype.toSerializedJson = function () {
+        var json = {};
+        json.gameid = this.gameid;
+        json.pgnHeaders = this.pgnHeaders;
+        json.moves = this.moves;
+        json.result = this.result;
+        return json;
+    };
+    LichessGame.prototype.fromJson = function (json) {
+        this.pgnHeaders = {};
+        var moves = json.moves;
+        this.moves = moves;
+        var variant = json.variant;
+        this.pgnHeaders["GameVariant"] = variant;
+        var players = json.players;
+        var white = players.white;
+        var black = players.black;
+        this.pgnHeaders["White"] = white.userId;
+        this.pgnHeaders["Black"] = black.userId;
+        var gameid = json.id;
+        this.gameid = gameid;
+        this.pgnHeaders["GameId"] = gameid;
+        var gameurl = json.url;
+        this.pgnHeaders["Url"] = gameurl;
+        var rated = json.rated;
+        this.pgnHeaders["Rated"] = "" + rated;
+        var speed = json.speed;
+        this.pgnHeaders["Speed"] = speed;
+        var createdat = json.createdAt;
+        this.pgnHeaders["CreatedAt"] = new Date(createdat).toLocaleString();
+        var lastmoveat = json.lastMoveAt;
+        this.pgnHeaders["LastMoveAt"] = new Date(lastmoveat).toLocaleString();
+        var duration = lastmoveat - createdat;
+        this.pgnHeaders["Duration"] = Misc.formatDurationMilliSeconds(duration);
+        var status = json.status;
+        this.pgnHeaders["Status"] = status;
+        var turns = json.turns;
+        this.pgnHeaders["Turns"] = turns;
+        var winner = json.winner;
+        this.pgnHeaders["Winner"] = winner;
+        this.result = "draw";
+        if (winner == "white") {
+            this.pgnHeaders["WinnerName"] = white.userId;
+            this.result = "1-0";
+        }
+        if (winner == "black") {
+            this.pgnHeaders["WinnerName"] = black.userId;
+            this.result = "0-1";
+        }
+        return this;
+    };
+    LichessGame.prototype.fromTextAsset = function (textasset) {
+        this.fromJson(textasset.asJson());
+        return this;
+    };
+    LichessGame.prototype.getHeader = function (key) {
+        var value = this.pgnHeaders[key];
+        return value;
+    };
+    return LichessGame;
+}());
 var Config;
 (function (Config) {
     Config.PREFERRED_BOARD_SIZE = 400;
+    Config.BOARD_INFO_HEIGHT = 50;
+    Config.TOTAL_BOARD_HEIGHT = Config.PREFERRED_BOARD_SIZE + 2 * Config.BOARD_INFO_HEIGHT;
     Config.PREFERRED_TAB_SIZE = 900;
     Config.STANDARD_START_RAW_FEN = "r0n0b0q0k0b0n0r0" +
         "p0p0p0p0p0p0p0p0" +
@@ -872,8 +1007,9 @@ var DomConfig = /** @class */ (function () {
     return DomConfig;
 }());
 var HTMLElement_ = /** @class */ (function () {
-    function HTMLElement_(kind) {
-        this.e = document.createElement(kind);
+    function HTMLElement_(_kind) {
+        this.kind = _kind;
+        this.e = document.createElement(_kind);
     }
     HTMLElement_.prototype.setAttribute = function (name, value) {
         this.e.setAttribute(name, value);
@@ -905,6 +1041,27 @@ var HTMLElement_ = /** @class */ (function () {
     HTMLElement_.prototype.html = function (content) {
         this.innerHTML = content;
         return this;
+    };
+    HTMLElement_.prototype.getComputedStyle = function () {
+        return getComputedStyle(this.e);
+    };
+    HTMLElement_.prototype.getComputedHeightPx = function () {
+        return this.getPx(this.getComputedStyle().height);
+    };
+    HTMLElement_.prototype.getComputedWidthPx = function () {
+        return this.getPx(this.getComputedStyle().width);
+    };
+    HTMLElement_.prototype.getComputedTopPx = function () {
+        return this.getPx(this.getComputedStyle().top);
+    };
+    HTMLElement_.prototype.getComputedLeftPx = function () {
+        return this.getPx(this.getComputedStyle().left);
+    };
+    HTMLElement_.prototype.getComputedBottomPx = function () {
+        return this.getComputedTopPx() + this.getComputedHeightPx();
+    };
+    HTMLElement_.prototype.getComputedRightPx = function () {
+        return this.getComputedLeftPx() + this.getComputedWidthPx();
     };
     HTMLElement_.prototype.scrollTop = function (scrolltop) {
         this.e.scrollTop = scrolltop;
@@ -1045,6 +1202,20 @@ var HTMLElement_ = /** @class */ (function () {
     HTMLElement_.prototype.marginPx = function (marginpx) {
         return this.margin(marginpx + "px");
     };
+    HTMLElement_.prototype.marginTop = function (margintop) {
+        this.e.style.marginTop = margintop;
+        return this;
+    };
+    HTMLElement_.prototype.marginTopPx = function (margintoppx) {
+        return this.marginTop(margintoppx + "px");
+    };
+    HTMLElement_.prototype.marginLeft = function (marginleft) {
+        this.e.style.marginLeft = marginleft;
+        return this;
+    };
+    HTMLElement_.prototype.marginLeftPx = function (marginleftpx) {
+        return this.marginLeft(marginleftpx + "px");
+    };
     HTMLElement_.prototype.visibility = function (visibility) {
         this.e.style.visibility = visibility;
         return this;
@@ -1123,6 +1294,24 @@ var HTMLElement_ = /** @class */ (function () {
     };
     HTMLElement_.prototype.getLeftPx = function () {
         return this.getPx(this.getLeft());
+    };
+    HTMLElement_.prototype.getWidth = function () {
+        return this.e.style.width;
+    };
+    HTMLElement_.prototype.getWidthPx = function () {
+        return this.getPx(this.getWidth());
+    };
+    HTMLElement_.prototype.getHeight = function () {
+        return this.e.style.height;
+    };
+    HTMLElement_.prototype.getHeightPx = function () {
+        return this.getPx(this.getHeight());
+    };
+    HTMLElement_.prototype.getBottomPx = function () {
+        return this.getTopPx() + this.getHeightPx();
+    };
+    HTMLElement_.prototype.getRightPx = function () {
+        return this.getLeftPx() + this.getWidthPx();
     };
     HTMLElement_.prototype.zIndex = function (zindex) {
         this.e.style.zIndex = zindex;
@@ -1440,11 +1629,13 @@ var Game = /** @class */ (function () {
     function Game() {
         this.result = "result";
         this.id = "gameid";
+        this.lgsjson = null;
     }
     Game.prototype.fromJson = function (json) {
         this.i = json.i;
         this.result = json.result;
         this.id = json.id;
+        this.lgsjson = json.lgsjson;
         return this;
     };
     return Game;
@@ -1453,10 +1644,32 @@ var PairingState = /** @class */ (function () {
     function PairingState() {
         this.players = [new Player(), new Player()];
         this.games = [];
+        this.forfeit = false;
     }
     PairingState.prototype.pairingLabel = function (i) {
         return this.players[i].name + " - " + this.players[1 - i].name;
     };
+    PairingState.prototype.resultColors = function (result) {
+        var wcolor = PairingState.RESULT_BLUE;
+        var bcolor = PairingState.RESULT_BLUE;
+        if (result == "1-0") {
+            wcolor = PairingState.RESULT_GREEN;
+            bcolor = PairingState.RESULT_RED;
+        }
+        if (result == "0-1") {
+            wcolor = PairingState.RESULT_RED;
+            bcolor = PairingState.RESULT_GREEN;
+        }
+        return { "wcolor": wcolor, "bcolor": bcolor };
+    };
+    PairingState.prototype.pairingLabelHtml = function (i, result) {
+        if (result === void 0) { result = "draw"; }
+        var rc = this.resultColors(result);
+        return "<span style=\"color:" + rc["wcolor"] + ";\">" + this.players[i].name + "</span>" + Misc.nbr(" - ") + "<span style=\"color:" + rc["bcolor"] + ";\">" + this.players[1 - i].name + "</span>";
+    };
+    PairingState.RESULT_BLUE = "#0000ff";
+    PairingState.RESULT_GREEN = "#007f00";
+    PairingState.RESULT_RED = "#ff0000";
     return PairingState;
 }());
 var Pairing = /** @class */ (function () {
@@ -1466,17 +1679,21 @@ var Pairing = /** @class */ (function () {
         this.LABEL_HEIGHT = 24;
         this.GAME_HEIGHT = 30;
         this.TOTAL_HEIGHT = this.HEIGHT + 40;
-        this.GAMES_EDIT_HEIGHT = 100;
         this.WIDTH = 220;
+        this.EDIT_SEPARATION = 10;
         this.LABEL_WIDTH = 150;
         this.LABEL_PADDING = 4;
+        this.TABLE_SPACING = 10;
         this.SCORE_WIDTH = 30;
         this.RESULT_WIDTH = 100;
         this.TOTAL_WIDTH = this.WIDTH + 110;
         this.SHOW_GAMES_WIDTH = 600;
         this.BAR_WIDTH = 8;
         this.BAR_COLOR = "#7f7f7f";
+        this.SELECTED_GAME_BCOL = "#afffaf";
+        this.CONTROL_BUTTON_PADDING = 5;
         this.state = new PairingState();
+        this.selectedgame = null;
         this.parentbracket = null;
         this.parents = [null, null];
         this.depth = 0;
@@ -1498,7 +1715,12 @@ var Pairing = /** @class */ (function () {
         for (var i in json.games) {
             var gamejson = json.games[i];
             this.state.games.push(new Game().fromJson(gamejson));
+            if (gamejson.lgsjson != null) {
+                var lg = new LichessGame().fromSerializedJson(gamejson.lgsjson);
+                this.parentbracket.lichessgameregistry[lg.gameid] = lg;
+            }
         }
+        this.state.forfeit = json.forfeit;
     };
     Pairing.prototype.createParents = function (currentchild, currentdepth, maxdepth, depthcounts) {
         if (this.parentbracket.pairingregistry[this.depth] == undefined)
@@ -1634,41 +1856,96 @@ var Pairing = /** @class */ (function () {
                 heightPx(this.LABEL_HEIGHT);
             this.div.appendChild(this.scores[i]);
         }
-        var showgamesbutton = new HTMLButtonElement_().
-            value(">").
-            onmousedown(this.showgamesuttonpressed.bind(this)).
+        this.showgamesbutton = new HTMLButtonElement_().
+            value(this.state.forfeit ? "Forfeit" : ">").
+            onmousedown(this.showgamesbuttonpressed.bind(this)).
             position("absolute").
-            topPx(this.showGamesButtonTopPx()).
-            leftPx(this.showGamesButtonLeftPx()).
-            heightPx(this.BUTTON_HEIGHT);
-        this.div.appendChild(showgamesbutton);
-    };
-    Pairing.prototype.showGamesButtonTopPx = function () {
-        return this.HEIGHT / 2 - this.BUTTON_HEIGHT / 2;
-    };
-    Pairing.prototype.showGamesButtonLeftPx = function () {
-        return this.LABEL_WIDTH + this.SCORE_WIDTH + 15;
+            topPx(this.HEIGHT / 2 - this.BUTTON_HEIGHT / 2).
+            leftPx(this.LABEL_WIDTH + this.SCORE_WIDTH + 15).
+            heightPx(this.BUTTON_HEIGHT).
+            zIndexNumber(100);
+        this.div.appendChild(this.showgamesbutton);
     };
     Pairing.prototype.newgamebuttonpressed = function (i, e) {
         var game = new Game();
         game.i = i;
         this.savegames();
-        this.parentbracket.save();
         this.state.games.push(game);
-        this.parentbracket.showngames = null;
-        this.showgamesuttonpressed.bind(this)();
+        this.parentbracket.save();
+        this.showgames();
+    };
+    Pairing.prototype.gameScoreForPlayer = function (g, i) {
+        var scorewhite = 0.5;
+        var scoreblack = 0.5;
+        if (g.result == "1-0") {
+            scorewhite = 1;
+            scoreblack = 0;
+        }
+        if (g.result == "0-1") {
+            scorewhite = 0;
+            scoreblack = 1;
+        }
+        var truei = g.i == 0 ? i : 1 - i;
+        return truei == 0 ? scorewhite : scoreblack;
+    };
+    Pairing.prototype.updateMatchScore = function () {
+        for (var i = 0; i < 2; i++) {
+            this.state.players[i].score = "0";
+            for (var gi = 0; gi < this.state.games.length; gi++) {
+                var score = this.gameScoreForPlayer(this.state.games[gi], i);
+                this.state.players[i].score = "" + (parseFloat(this.state.players[i].score) + score);
+            }
+        }
+    };
+    Pairing.prototype.updateMatchScoreGui = function () {
+        this.updateMatchScore();
+        for (var i = 0; i < 2; i++)
+            this.scores[i].setText(this.state.players[i].score);
+    };
+    Pairing.prototype.checkgameloaded = function (gi, lg, li) {
+        this.selectedgame = gi;
+        Globals.gui.log(li);
+        Globals.gui.tabs.setSelected("bracket");
+        var lgsjson = lg.toSerializedJson();
+        this.state.games[gi].lgsjson = lgsjson;
+        this.state.games[gi].id = lg.gameid;
+        this.state.games[gi].result = lg.result;
+        this.parentbracket.lichessgameregistry[lg.gameid] = lg;
+        this.updateMatchScoreGui();
+        this.showgames();
+    };
+    Pairing.prototype.loadgameerror = function (gi, lg) {
+        Globals.gui.log(lg.errorLogitem());
+        var lgsjson = this.state.games[gi].lgsjson;
+        if (lgsjson != null) {
+            lg.fromSerializedJson(lgsjson);
+            this.checkgameloaded(gi, lg, lg.localAvailableLogitem());
+        }
+    };
+    Pairing.prototype.checkgamebuttonpressed = function (gi, e) {
+        var gameid = this.gameids[gi].getText();
+        var lg = new LichessGame(gameid);
+        Globals.gui.tabs.setSelected("log");
+        Globals.gui.log(lg.infoLogitem());
+        lg.loadThen(this.checkgameloaded.bind(this, gi, lg, lg.okLogitem()), this.loadgameerror.bind(this, gi, lg));
     };
     Pairing.prototype.deletegamebuttonpressed = function (gi, e) {
+        this.selectedgame = null;
         var newgames = [];
         for (var i = 0; i < this.state.games.length; i++) {
             if (i != gi)
                 newgames.push(this.state.games[i]);
         }
         this.state.games = newgames;
+        this.showgames();
+    };
+    Pairing.prototype.showgames = function () {
         this.parentbracket.showngames = null;
-        this.showgamesuttonpressed.bind(this)();
+        this.showgamesbuttonpressed.bind(this)();
     };
     Pairing.prototype.opengamebuttonpressed = function (gi, e) {
+        this.selectedgame = gi;
+        this.showgames();
         var id = this.state.games[gi].id;
         var gui = Globals.gui;
         gui.gameidtext.setText(id);
@@ -1682,106 +1959,168 @@ var Pairing = /** @class */ (function () {
     };
     Pairing.prototype.savegamesbuttonpressed = function (e) {
         this.savegames();
-        this.showgamesuttonpressed.bind(this)();
+        this.updateMatchScoreGui();
+        this.showgamesbuttonpressed.bind(this)();
     };
-    Pairing.prototype.showgamesuttonpressed = function (e) {
+    Pairing.prototype.forfeitbuttonpressed = function (e) {
+        this.state.forfeit = !this.state.forfeit;
+        this.parentbracket.showngames = null;
+        this.parentbracket.save();
+        this.parentbracket.createElement();
+    };
+    Pairing.prototype.createEditTable = function () {
+        var edittable;
+        edittable = new HTMLTableElement_().
+            borderCollapse("separate").
+            borderSpacingPx(this.TABLE_SPACING).
+            backgroundColor("#ffff7f");
+        var et_tr1 = new HTMLTableRowElement_();
+        var et_td11 = new HTMLTableColElement_();
+        var et_td12 = new HTMLTableColElement_();
+        et_tr1.appendChilds([et_td11, et_td12]);
+        var et_tr2 = new HTMLTableRowElement_();
+        var savegamesbutton = new HTMLButtonElement_().
+            value("Save games").
+            onmousedown(this.savegamesbuttonpressed.bind(this));
+        et_td11.appendChilds([savegamesbutton]);
+        this.forfeitbutton = new HTMLButtonElement_().
+            value(this.state.forfeit ? "Unforfeit" : "Forfeit").
+            onmousedown(this.forfeitbuttonpressed.bind(this));
+        et_td12.appendChilds([this.forfeitbutton]);
+        for (var i = 0; i < 2; i++) {
+            var newgamebutton = new HTMLButtonElement_().
+                value("New " + this.state.pairingLabel(i)).
+                onmousedown(this.newgamebuttonpressed.bind(this, i));
+            var et_td2_ = new HTMLTableColElement_();
+            et_tr2.appendChild(et_td2_);
+            et_td2_.appendChilds([
+                newgamebutton
+            ]);
+        }
+        edittable.appendChilds([et_tr1, et_tr2]);
+        return edittable;
+    };
+    Pairing.prototype.createGameTable = function () {
+        var numgames = this.state.games.length;
+        var gamepanel = new HTMLTableElement_().
+            position("absolute").topPx(this.topPx() + this.showgamesbutton.getComputedBottomPx() + this.EDIT_SEPARATION / 2 +
+            (this.parentbracket.editmode ? this.edittabletop.getComputedHeightPx() + this.EDIT_SEPARATION : 0)).
+            leftPx(this.leftPx() + this.showgamesbutton.getComputedLeftPx() - this.EDIT_SEPARATION).
+            borderCollapse("separate").
+            borderSpacingPx(this.TABLE_SPACING).
+            backgroundColor("#ffff7f");
+        this.gamescores = [];
+        this.gameids = [];
+        for (var gi = 0; gi < numgames; gi++) {
+            var tr = new HTMLTableRowElement_();
+            var game = this.state.games[gi];
+            var checkgamebutton = new HTMLButtonElement_().
+                value("Check").
+                onmousedown(this.checkgamebuttonpressed.bind(this, gi));
+            var deletegamebutton = new HTMLButtonElement_().
+                value("Delete").
+                onmousedown(this.deletegamebuttonpressed.bind(this, gi));
+            var opengamebutton = new HTMLButtonElement_().
+                value("Open").
+                onmousedown(this.opengamebuttonpressed.bind(this, gi));
+            var gamescoreinput = this.parentbracket.editmode ?
+                new HTMLInputElement_().
+                    setText(game.result).
+                    widthPx(this.RESULT_WIDTH)
+                :
+                    new HTMLDivElement_().
+                        html(Misc.nbr(game.result)).
+                        paddingLeftPx(8).
+                        paddingRightPx(8);
+            this.gamescores.push(gamescoreinput);
+            var gameidinput = new HTMLInputElement_().
+                setText(game.id).
+                widthPx(this.RESULT_WIDTH);
+            this.gameids.push(gameidinput);
+            var pairinglabel = new HTMLDivElement_().
+                paddingTopPx(this.CONTROL_BUTTON_PADDING).
+                paddingBottomPx(this.CONTROL_BUTTON_PADDING).
+                html(this.state.pairingLabelHtml(game.i, game.result));
+            tr.appendChilds([
+                new HTMLTableColElement_().
+                    paddingLeftPx(this.CONTROL_BUTTON_PADDING).
+                    paddingRightPx(this.CONTROL_BUTTON_PADDING).
+                    appendChild(opengamebutton),
+                new HTMLTableColElement_().
+                    paddingLeftPx(this.CONTROL_BUTTON_PADDING).
+                    paddingRightPx(this.CONTROL_BUTTON_PADDING).
+                    appendChild(pairinglabel),
+                new HTMLTableColElement_().
+                    paddingLeftPx(this.CONTROL_BUTTON_PADDING).
+                    paddingRightPx(this.CONTROL_BUTTON_PADDING).
+                    appendChild(gamescoreinput)
+            ]);
+            if (this.parentbracket.editmode)
+                tr.appendChilds([
+                    new HTMLTableColElement_().
+                        paddingLeftPx(this.CONTROL_BUTTON_PADDING).
+                        paddingRightPx(this.CONTROL_BUTTON_PADDING).
+                        appendChild(gameidinput),
+                    new HTMLTableColElement_().
+                        paddingLeftPx(this.CONTROL_BUTTON_PADDING).
+                        paddingRightPx(this.CONTROL_BUTTON_PADDING).
+                        appendChild(checkgamebutton),
+                    new HTMLTableColElement_().
+                        paddingLeftPx(this.CONTROL_BUTTON_PADDING).
+                        paddingRightPx(this.CONTROL_BUTTON_PADDING).
+                        appendChild(deletegamebutton)
+                ]);
+            if (this.selectedgame != null) {
+                if (gi == this.selectedgame) {
+                    tr.backgroundColor(this.SELECTED_GAME_BCOL);
+                }
+            }
+            gamepanel.appendChild(tr);
+        }
+        return gamepanel;
+    };
+    Pairing.prototype.showgamesbuttonpressed = function (e) {
         this.parentbracket.save();
         if ((e != undefined) && (e == null))
             this.parentbracket.showngames = null;
         var show = this.parentbracket.showngames != this;
         this.parentbracket.showngames = show ? this : null;
         var sgd = this.parentbracket.showgamediv;
-        var numgames = this.state.games.length;
-        sgd.html("").widthPx(0).heightPx(0).leftPx(0).topPx(0);
+        sgd.html("").widthPx(0).heightPx(0).leftPx(0).topPx(0).zIndexNumber(200);
         if (!show)
             return;
-        if (this.parentbracket.editmode) {
-            var editpanel = new HTMLDivElement_().
-                position("absolute").
-                topPx(this.topPx() + this.showGamesButtonTopPx() + 25).
-                leftPx(this.leftPx() + this.showGamesButtonLeftPx() - 20).
-                widthPx(this.SHOW_GAMES_WIDTH).
-                heightPx(this.GAMES_EDIT_HEIGHT).
-                backgroundColor("#ffff7f");
-            var savegamesbutton = new HTMLButtonElement_().
-                value("Save games").
-                onmousedown(this.savegamesbuttonpressed.bind(this));
-            editpanel.appendChilds([
-                savegamesbutton.marginPx(5),
-                new HTMLBRElement_(),
-                new HTMLBRElement_()
-            ]);
-            for (var i = 0; i < 2; i++) {
-                var newgamebutton = new HTMLButtonElement_().
-                    value("New " + this.state.pairingLabel(i)).
-                    onmousedown(this.newgamebuttonpressed.bind(this, i)).
-                    marginPx(5);
-                editpanel.appendChilds([
-                    newgamebutton
-                ]);
-            }
-            sgd.appendChild(editpanel);
-        }
-        var gamepanel = new HTMLDivElement_().
+        var etdivtop = new HTMLDivElement_().
             position("absolute").
-            topPx(this.topPx() + this.showGamesButtonTopPx() + 25 + (this.parentbracket.editmode ? this.GAMES_EDIT_HEIGHT + 10 : 0)).
-            leftPx(this.leftPx() + this.showGamesButtonLeftPx() - 20).
-            widthPx(this.SHOW_GAMES_WIDTH).
-            heightPx(this.state.games.length * this.GAME_HEIGHT).
-            backgroundColor("#ffff7f");
-        this.gamescores = [];
-        this.gameids = [];
-        for (var gi = 0; gi < numgames; gi++) {
-            var game = this.state.games[gi];
-            var deletegamebutton = new HTMLButtonElement_().
-                value("Delete").
-                onmousedown(this.deletegamebuttonpressed.bind(this, gi)).
-                marginPx(5);
-            var opengamebutton = new HTMLButtonElement_().
-                value("Open").
-                onmousedown(this.opengamebuttonpressed.bind(this, gi)).
-                marginPx(5);
-            var gdiv = new HTMLDivElement_().heightPx(this.GAME_HEIGHT);
-            var gamescoreinput = this.parentbracket.editmode ?
-                new HTMLInputElement_().
-                    setText(game.result).
-                    widthPx(this.RESULT_WIDTH).
-                    marginPx(5)
-                :
-                    new HTMLLabelElement_().
-                        setText(game.result).
-                        widthPx(this.RESULT_WIDTH).
-                        marginPx(5);
-            this.gamescores.push(gamescoreinput);
-            var gameidinput = new HTMLInputElement_().
-                setText(game.id).
-                widthPx(this.RESULT_WIDTH).
-                marginPx(5);
-            this.gameids.push(gameidinput);
-            gdiv.appendChilds([
-                opengamebutton,
-                new HTMLLabelElement_().
-                    setText(this.state.pairingLabel(game.i)).
-                    marginPx(5),
-                gamescoreinput
-            ]);
-            if (this.parentbracket.editmode)
-                gdiv.appendChilds([
-                    gameidinput,
-                    deletegamebutton
-                ]);
-            gamepanel.appendChild(gdiv);
+            topPx(this.topPx() + this.showgamesbutton.getComputedBottomPx() + this.EDIT_SEPARATION / 2).
+            leftPx(this.leftPx() + this.showgamesbutton.getComputedLeftPx() - this.EDIT_SEPARATION);
+        var etdivbottom = new HTMLDivElement_().
+            position("absolute").
+            leftPx(this.leftPx() + this.showgamesbutton.getComputedLeftPx() - this.EDIT_SEPARATION);
+        if (this.parentbracket.editmode) {
+            this.edittabletop = this.createEditTable();
+            this.edittablebottom = this.createEditTable();
+            etdivtop.appendChild(this.edittabletop);
+            etdivbottom.appendChild(this.edittablebottom);
+            sgd.appendChild(etdivtop);
+            sgd.appendChild(etdivbottom);
         }
+        var gamepanel = this.createGameTable();
         sgd.appendChild(gamepanel);
+        if (this.parentbracket.editmode) {
+            etdivbottom.
+                topPx(gamepanel.getComputedBottomPx() + this.EDIT_SEPARATION);
+        }
     };
     return Pairing;
 }());
 var Bracket = /** @class */ (function () {
     function Bracket(_rounds) {
         if (_rounds === void 0) { _rounds = 5; }
+        this.DIV_BUFFER_SIZE = 1200;
         this.showngames = null;
         this.pairingstateregistry = {};
         this.pairingregistry = {};
+        this.lichessgameregistry = {};
         this.name = "default";
         this.dragunderway = false;
         this.editmode = true;
@@ -1827,6 +2166,9 @@ var Bracket = /** @class */ (function () {
         loadbutton = new HTMLButtonElement_().
             value("Load").
             onmousedown(this.loadbuttonpressed.bind(this));
+        var importbutton = new HTMLButtonElement_().
+            value("Import").
+            onmousedown(this.importbuttonpressed.bind(this));
         if (this.storedjson() == null) {
             loadbutton = new HTMLLabelElement_().setText("Nothing saved yet");
         }
@@ -1841,7 +2183,8 @@ var Bracket = /** @class */ (function () {
                 this.maindiv.appendChilds([
                     freezebutton,
                     savebutton,
-                    loadbutton
+                    loadbutton,
+                    importbutton
                 ]);
             }
             else {
@@ -1857,8 +2200,8 @@ var Bracket = /** @class */ (function () {
             position("absolute");
         this.bracketdiv.appendChild(this.showgamediv);
         this.maindiv.appendChild(this.bracketdiv);
-        this.maindiv.widthPx(this.root.TOTAL_WIDTH * this.rounds + 1000);
-        this.maindiv.heightPx(this.root.TOTAL_HEIGHT * Math.pow(2, this.rounds - 1) + 1000);
+        this.maindiv.widthPx(this.root.TOTAL_WIDTH * this.rounds + this.DIV_BUFFER_SIZE);
+        this.maindiv.heightPx(this.root.TOTAL_HEIGHT * Math.pow(2, this.rounds - 1) + this.DIV_BUFFER_SIZE);
         return this.maindiv;
     };
     Bracket.prototype.storedjson = function () {
@@ -1906,6 +2249,11 @@ var Bracket = /** @class */ (function () {
     };
     Bracket.prototype.loadbuttonpressed = function (e) {
         this.load();
+        this.createElement();
+    };
+    Bracket.prototype.importbuttonpressed = function (e) {
+        this.load(Globals.gui.srctext.getText());
+        this.save();
         this.createElement();
     };
     Bracket.prototype.freezebuttonpressed = function (e) {
@@ -2096,7 +2444,7 @@ var GUI = /** @class */ (function () {
         ]);
     };
     GUI.prototype.createTabs = function () {
-        this.tabs = new TabPane_("tabs", Config.PREFERRED_TAB_SIZE, Config.PREFERRED_BOARD_SIZE, [
+        this.tabs = new TabPane_("tabs", Config.PREFERRED_TAB_SIZE, Config.TOTAL_BOARD_HEIGHT, [
             new Tab("pgn", "Pgn"),
             new Tab("book", "Book"),
             new Tab("moves", "Moves"),
@@ -2128,7 +2476,7 @@ var GUI = /** @class */ (function () {
         this.pgntext = new HTMLTextAreaElement_();
         this.pgntext.
             widthPx(Config.PREFERRED_TAB_SIZE - 25).
-            heightPx(Config.PREFERRED_BOARD_SIZE - 65);
+            heightPx(Config.TOTAL_BOARD_HEIGHT - 65);
         this.pgnkeytext = new HTMLInputElement_;
         this.pgnvaluetext = new HTMLInputElement_;
         this.pgnvaluetext.widthPx(465);
@@ -2191,7 +2539,7 @@ var GUI = /** @class */ (function () {
         this.srctext = new HTMLTextAreaElement_();
         this.srctext.
             widthPx(Config.PREFERRED_TAB_SIZE - 25).
-            heightPx(Config.PREFERRED_BOARD_SIZE - 45);
+            heightPx(Config.TOTAL_BOARD_HEIGHT - 45);
         this.srcdiv.appendChild(this.srctext);
     };
     GUI.prototype.draw = function () {
@@ -2408,59 +2756,38 @@ var GUI = /** @class */ (function () {
             this.makerandom();
         }
     };
-    GUI.prototype.ongameload = function (textasset, url) {
-        this.log(new Misc.Logitem("game loaded " + url).ok());
-        var json = textasset.asJson();
-        var variant = json.variant;
+    GUI.prototype.ongameload = function (lg) {
+        this.log(lg.okLogitem());
+        var variant = lg.getHeader("GameVariant");
         if (!this.setVariant(variant)) {
             this.log(new Misc.Logitem("error setting up game: unsupported variant " + variant).error());
             return;
         }
-        var moves = json.moves;
+        var moves = lg.moves;
         this.logstr(moves);
         Globals.wboard.setFromPgn(moves);
-        var players = json.players;
-        var white = players.white;
-        var black = players.black;
-        Globals.wboard.editPgn("White", white.userId);
-        Globals.wboard.editPgn("Black", black.userId);
-        var gameid = json.id;
-        Globals.wboard.editPgn("GameId", gameid);
-        var gameurl = json.url;
-        Globals.wboard.editPgn("Url", gameurl);
-        var rated = json.rated;
-        Globals.wboard.editPgn("Rated", "" + rated);
-        var speed = json.speed;
-        Globals.wboard.editPgn("Speed", speed);
-        var createdat = json.createdAt;
-        Globals.wboard.editPgn("CreatedAt", new Date(createdat).toLocaleString());
-        var lastmoveat = json.lastMoveAt;
-        Globals.wboard.editPgn("LastMoveAt", new Date(lastmoveat).toLocaleString());
-        var status = json.status;
-        Globals.wboard.editPgn("Status", status);
-        var turns = json.turns;
-        Globals.wboard.editPgn("Turns", turns);
-        var winner = json.winner;
-        Globals.wboard.editPgn("Winner", winner);
-        if (winner == "white")
-            Globals.wboard.editPgn("WinnerName", white.userId);
-        if (winner == "black")
-            Globals.wboard.editPgn("WinnerName", black.userId);
+        for (var key in lg.pgnHeaders) {
+            var value = lg.getHeader(key);
+            Globals.wboard.editPgn(key, value);
+        }
         Globals.wboard.draw();
         this.tabs.setSelected("pgn");
     };
+    GUI.prototype.gameloaderror = function (lg) {
+        this.log(lg.errorLogitem());
+        var storedlg = this.bracket.lichessgameregistry[lg.gameid];
+        if (storedlg != undefined) {
+            this.log(lg.localAvailableLogitem());
+            this.ongameload(storedlg);
+        }
+    };
     GUI.prototype.gameloadbuttonpressed = function (e) {
         var gameid = this.gameidtext.getText();
+        var lg = new LichessGame(gameid);
         this.gameidtext.setText("");
-        var url = "https://lichess.org/api/game/" + gameid + "?with_moves=1";
         this.tabs.setSelected("log");
-        this.log(new Misc.Logitem("loading game " + url).info());
-        var textasset = new TextAsset(url);
-        new AssetLoader().
-            add(textasset).
-            setcallback(this.ongameload.bind(this, textasset, url)).
-            seterrorcallback(this.log.bind(this, new Misc.Logitem("error loading game: " + url + " timed out").error())).
-            load();
+        this.log(lg.infoLogitem());
+        lg.loadThen(this.ongameload.bind(this, lg), this.gameloaderror.bind(this, lg));
     };
     return GUI;
 }());
@@ -2473,6 +2800,7 @@ var wBoard = /** @class */ (function (_super) {
             "_i64Add": function (x) { }
         }) || this;
         _this.isready = false;
+        _this.infodivs = [new HTMLDivElement_(), new HTMLDivElement_()];
         _this.flip = 0;
         _this.importObject.env["_conslog"] = function () {
             if (Globals.gui.logger == undefined) {
@@ -2545,6 +2873,7 @@ var wBoard = /** @class */ (function (_super) {
     wBoard.prototype.setVariant = function (variant) {
         this.initVariant(variant);
         //this.initVariantManual(variant)                
+        this.flip = 0;
     };
     wBoard.prototype.dosetVariant = function (variant, storepgn) {
         if (storepgn === void 0) { storepgn = true; }
@@ -2641,6 +2970,11 @@ var wBoard = /** @class */ (function (_super) {
         this.inbuff.strCpy(key);
         this.inbuff2.strCpy(value);
         this.exports._editPgn();
+    };
+    wBoard.prototype.getPgnHeader = function (key) {
+        this.inbuff.strCpy(key);
+        this.exports._getPgnHeader();
+        return this.outbuff.toString();
     };
     wBoard.prototype.doeditPgn = function (key, value) {
         this.editPgn(key, value);
@@ -2760,6 +3094,12 @@ var wBoard = /** @class */ (function (_super) {
         }
         bcd.appendChild(bt);
     };
+    wBoard.prototype.trueIndexTwoPlayer = function (i) {
+        return this.flip == 0 ? i : 1 - i;
+    };
+    wBoard.prototype.getPlayerNameByIndexTwoPlayer = function (i) {
+        return this.getPgnHeader(i == 0 ? "Black" : "White");
+    };
     wBoard.prototype.draw = function (storepgn) {
         if (storepgn === void 0) { storepgn = true; }
         var t = new Misc.Timer("wboard draw", Globals.log);
@@ -2773,10 +3113,16 @@ var wBoard = /** @class */ (function (_super) {
         this.root.html("");
         var numranks = this.getNumRanks();
         var numfiles = this.getNumFiles();
+        var infoboardcontainer = new HTMLDivElement_().
+            backgroundColor(wBoard.INFO_BCOL).
+            widthPx(numfiles * this.SQUARE_SIZE() + 2 * this.MARGIN()).
+            heightPx(numranks * this.SQUARE_SIZE() + 2 * this.MARGIN() + 2 * Config.BOARD_INFO_HEIGHT).
+            position("relative");
         var outerboardcontainer = new HTMLDivElement_().
             background("url(assets/images/backgrounds/wood.jpg)").
             widthPx(numfiles * this.SQUARE_SIZE() + 2 * this.MARGIN()).
             heightPx(numranks * this.SQUARE_SIZE() + 2 * this.MARGIN()).
+            topPx(Config.BOARD_INFO_HEIGHT).
             position("relative");
         var boardcontainer = new HTMLDivElement_().
             background("url(assets/images/backgrounds/wood.jpg)").
@@ -2839,7 +3185,8 @@ var wBoard = /** @class */ (function (_super) {
         var enginearrow = new HTMLDivElement_();
         boardcontainer.appendChild(enginearrow);
         Globals.gui.analyzer.enginearrow = enginearrow;
-        this.root.appendChild(outerboardcontainer);
+        infoboardcontainer.appendChild(outerboardcontainer);
+        this.root.appendChild(infoboardcontainer);
         this.boardcontainer = boardcontainer;
         var lastmove = this.reportLastMove();
         if (lastmove != null) {
@@ -2847,7 +3194,33 @@ var wBoard = /** @class */ (function (_super) {
         }
         this.dragz = wBoard.PIECE_Z_INDEX + 1;
         this.showBookPage();
-        //t.report()
+        for (var i = 0; i < 2; i++) {
+            var leftpx = wBoard.INFO_DIV_MARGIN;
+            var toppx = i == 0 ?
+                wBoard.INFO_DIV_MARGIN
+                :
+                    outerboardcontainer.getBottomPx() + wBoard.INFO_DIV_MARGIN;
+            var widthpx = outerboardcontainer.getWidthPx() - 2 * wBoard.INFO_DIV_MARGIN;
+            var heightpx = Config.BOARD_INFO_HEIGHT - 2 * wBoard.INFO_DIV_MARGIN;
+            this.infodivs[i].
+                position("absolute").
+                topPx(toppx).
+                leftPx(leftpx).
+                widthPx(widthpx).
+                heightPx(heightpx).
+                backgroundColor(wBoard.INFO_DIV_BCOL).
+                html("");
+            infoboardcontainer.appendChild(this.infodivs[i]);
+            if (this.getNumPlayers() == 2) {
+                var playerlabel = new HTMLDivElement_().
+                    html(this.getPlayerNameByIndexTwoPlayer(this.trueIndexTwoPlayer(i))).
+                    fontSizePx(Config.BOARD_INFO_HEIGHT / 2).
+                    marginLeftPx(10).
+                    marginTopPx(5);
+                this.infodivs[i].appendChild(playerlabel);
+            }
+        }
+        //t.report()        
     };
     wBoard.prototype.piecedragstart = function (sq, pdiv, e) {
         var me = e;
@@ -2932,7 +3305,7 @@ var wBoard = /** @class */ (function (_super) {
         return this.exports._getNumPlayers();
     };
     wBoard.prototype.doflip = function () {
-        this.flip++;
+        this.flip += (this.getNumPlayers() == 4 ? 1 : 2);
         if (this.flip >= 4) {
             this.flip = 0;
         }
@@ -2965,6 +3338,9 @@ var wBoard = /** @class */ (function (_super) {
     wBoard.DARK_SQUARE_COLOR = "#afafaf";
     wBoard.PIECE_FILL_COLORS = ["#000000", "#ffffff", "#ffff00", "#ff0000"];
     wBoard.PIECE_STROKE_COLORS = ["#ffffff", "#dfdfdf", "#afafaf", "#afafaf"];
+    wBoard.INFO_BCOL = "#cfcfaf";
+    wBoard.INFO_DIV_MARGIN = 8;
+    wBoard.INFO_DIV_BCOL = "#dfdfaf";
     return wBoard;
 }(WasmLoader.WasmLoader));
 var Globals;

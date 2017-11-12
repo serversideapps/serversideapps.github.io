@@ -119,6 +119,9 @@ void getHeader(){
 	if(headers.hi>=0){
 		_strcpys(headers.headers[headers.hi].key,headers.key,MAX_HEADER_KEY_SIZE);
 		_strcpys(headers.headers[headers.hi].value,headers.value,MAX_HEADER_VALUE_SIZE);	
+	} else {
+		headers.key[0]=0;
+		headers.value[0]=0;
 	}
 }
 
