@@ -1937,6 +1937,7 @@ var Pairing = /** @class */ (function () {
                 newgames.push(this.state.games[i]);
         }
         this.state.games = newgames;
+        this.updateMatchScoreGui();
         this.showgames();
     };
     Pairing.prototype.showgames = function () {

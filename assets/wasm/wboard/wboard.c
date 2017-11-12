@@ -136,8 +136,15 @@ void reportPgnMain(){
 
 	setHeader();
 
+	GameNode* oldcurrent=b.current;
+	uint8_t torootneeded=(b.current!=b.root);
+
+	if(torootneeded) tonode(b.root);
+
 	headers.key[0]='F';headers.key[1]='E';headers.key[2]='N';headers.key[3]=0;
 	reportFen(&b,headers.value);
+
+	if(torootneeded) tonode(oldcurrent);
 
 	setHeader();
 
