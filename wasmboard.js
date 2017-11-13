@@ -1614,6 +1614,182 @@ var HTMLSpanElement_ = /** @class */ (function (_super) {
     }
     return HTMLSpanElement_;
 }(HTMLElement_));
+var LichessUserData = /** @class */ (function () {
+    function LichessUserData() {
+        this.atomicrating = 1500;
+        this.atomicgames = 0;
+    }
+    return LichessUserData;
+}());
+var LichessUser = /** @class */ (function () {
+    function LichessUser(_handle) {
+        this.handle = "Anonymous";
+        this.data = new LichessUserData();
+        this.handle = _handle;
+    }
+    LichessUser.prototype.url = function () {
+        var url = "https://lichess.org/api/user/" + this.handle;
+        return url;
+    };
+    LichessUser.prototype.loadThen = function (_callback, errorcallback) {
+        this.callback = _callback;
+        this.textasset = new TextAsset(this.url());
+        new AssetLoader().
+            add(this.textasset).
+            setcallback(this.onLoad.bind(this)).
+            seterrorcallback(errorcallback).
+            load();
+    };
+    LichessUser.prototype.onLoad = function () {
+        this.fromTextAsset(this.textasset);
+        this.callback();
+    };
+    LichessUser.prototype.errorLogitem = function () {
+        return new Misc.Logitem("error loading user: " + this.url() + " timed out").error();
+    };
+    LichessUser.prototype.infoLogitem = function () {
+        return new Misc.Logitem("loading user " + this.url()).info();
+    };
+    LichessUser.prototype.okLogitem = function () {
+        return new Misc.Logitem("user loaded " + this.url()).ok();
+    };
+    LichessUser.prototype.fromTextAsset = function (textasset) {
+        return this.fromJsonText(textasset.text);
+    };
+    LichessUser.prototype.fromJsonText = function (storedjsontext) {
+        return this.fromJson(JSON.parse(storedjsontext));
+    };
+    LichessUser.prototype.fromJson = function (json) {
+        var perfs = json.perfs;
+        if (Misc.isDefined(perfs)) {
+            var atomic = perfs.atomic;
+            if (Misc.isDefined(atomic)) {
+                this.data.atomicrating = atomic.rating;
+                this.data.atomicgames = atomic.games;
+            }
+        }
+        //console.log(json)
+        this.data.membersince = json.createdAt;
+        this.data.followers = json.nbFollowers;
+        return this;
+    };
+    return LichessUser;
+}());
+var PlayerUtils;
+(function (PlayerUtils) {
+    var paddedTd = /** @class */ (function (_super) {
+        __extends(paddedTd, _super);
+        function paddedTd() {
+            var _this = _super.call(this) || this;
+            _this.paddingPx(3);
+            _this.backgroundColor("#afffaf");
+            return _this;
+        }
+        return paddedTd;
+    }(HTMLTableColElement_));
+    PlayerUtils.paddedTd = paddedTd;
+})(PlayerUtils || (PlayerUtils = {}));
+var paddedTd = PlayerUtils.paddedTd;
+var LichessUsers = /** @class */ (function () {
+    function LichessUsers() {
+        this.users = {};
+        this.name = "players";
+        var storedjsontext = localStorage.getItem(this.storeid());
+        if (Misc.isDefined(storedjsontext)) {
+            this.fromJsonText(storedjsontext);
+        }
+        this.maindiv = new HTMLDivElement_().
+            backgroundColor("#ffffaf");
+    }
+    LichessUsers.prototype.storeid = function () {
+        return "lichessusers_" + this.name;
+    };
+    LichessUsers.prototype.fromJsonText = function (storedjsontext) {
+        this.users = JSON.parse(storedjsontext);
+        return this;
+    };
+    LichessUsers.prototype.sortedHandles = function () {
+        var _this = this;
+        var keys = Object.keys(this.users);
+        var sorted = keys.sort(function (a, b) {
+            var ua = _this.users[a];
+            var ub = _this.users[b];
+            return ub.atomicrating - ua.atomicrating;
+        });
+        return sorted;
+    };
+    LichessUsers.prototype.createElement = function () {
+        var _this = this;
+        this.maindiv.html("");
+        this.table = new HTMLTableElement_().
+            borderCollapse("separate").
+            borderSpacingPx(3);
+        var htr = new HTMLTableRowElement_();
+        htr.appendChilds([
+            new paddedTd().html("Rank"),
+            new paddedTd().html("Player"),
+            new paddedTd().html("Rating"),
+            new paddedTd().html("Games"),
+            new paddedTd().html("Followers"),
+            new paddedTd().html("Member since"),
+            new paddedTd().html("Load")
+        ]);
+        this.table.appendChild(htr);
+        var i = 1;
+        this.sortedHandles().map(function (handle) {
+            var tr = new HTMLTableRowElement_();
+            var data = _this.users[handle];
+            tr.appendChilds([
+                new paddedTd().html("" + i + "."),
+                new paddedTd().html(handle),
+                new paddedTd().html("" + data.atomicrating),
+                new paddedTd().html("" + data.atomicgames),
+                new paddedTd().html("" + data.followers),
+                new paddedTd().html("" + new Date(data.membersince).toLocaleString()),
+                new paddedTd().appendChild(new HTMLButtonElement_().
+                    value("Load").
+                    onmousedown(_this.loade.bind(_this, handle)))
+            ]);
+            _this.table.appendChild(tr);
+            i++;
+        });
+        this.maindiv.appendChild(this.table);
+        return this.maindiv;
+    };
+    LichessUsers.prototype.onplayerload = function (lu) {
+        Globals.gui.log(lu.okLogitem());
+        Globals.gui.tabs.setSelected("players");
+        this.addSaveDraw(lu);
+    };
+    LichessUsers.prototype.onplayererror = function (lu) {
+        Globals.gui.log(lu.errorLogitem());
+    };
+    LichessUsers.prototype.load = function (handle) {
+        var lu = new LichessUser(handle);
+        Globals.gui.tabs.setSelected("log");
+        Globals.gui.log(lu.infoLogitem());
+        lu.loadThen(this.onplayerload.bind(this, lu), this.onplayererror.bind(this, lu));
+    };
+    LichessUsers.prototype.loade = function (handle, e) {
+        this.load(handle);
+    };
+    LichessUsers.prototype.save = function () {
+        var jsontext = JSON.stringify(this.users);
+        localStorage.setItem(this.storeid(), jsontext);
+    };
+    LichessUsers.prototype.add = function (lu) {
+        this.users[lu.handle] = lu.data;
+    };
+    LichessUsers.prototype.addSave = function (lu) {
+        this.add(lu);
+        this.save();
+    };
+    LichessUsers.prototype.addSaveDraw = function (lu) {
+        this.addSave(lu);
+        this.createElement();
+    };
+    return LichessUsers;
+}());
 var Player = /** @class */ (function () {
     function Player() {
         this.name = "?";
@@ -1782,6 +1958,9 @@ var Pairing = /** @class */ (function () {
     Pairing.prototype.hasParent = function () {
         return this.parents[0] != null;
     };
+    Pairing.prototype.playerpressed = function (handle, e) {
+        Globals.gui.players.load(handle);
+    };
     Pairing.prototype.createElement = function () {
         this.div = new HTMLDivElement_().
             position("absolute").
@@ -1833,12 +2012,14 @@ var Pairing = /** @class */ (function () {
                     new HTMLLabelElement_().
                         setText(player.name).
                         paddingTopPx(this.LABEL_PADDING).
-                        paddingLeftPx(this.LABEL_PADDING));
+                        paddingLeftPx(this.LABEL_PADDING).
+                        cursor("pointer"));
             this.labels[i].position("absolute").
                 topPx((i * 2 + 1) * this.HEIGHT / 4 - this.LABEL_HEIGHT / 2).
                 leftPx(3).
                 widthPx(this.LABEL_WIDTH).
-                heightPx(this.LABEL_HEIGHT);
+                heightPx(this.LABEL_HEIGHT).
+                addEventListener("mousedown", this.playerpressed.bind(this, player.name));
             this.div.appendChild(this.labels[i]);
             this.scores[i] = (this.parentbracket.editmode ?
                 new HTMLInputElement_().
@@ -2318,6 +2499,7 @@ var GUI = /** @class */ (function () {
         this.LABEL_BCOL = "#efefef";
         this.book = null;
         this.bracket = null;
+        this.players = new LichessUsers();
         this.state = new GUIState();
         this.firstdraw = true;
         this.bracketjsonasset = new TextAsset("bracket.json");
@@ -2452,6 +2634,7 @@ var GUI = /** @class */ (function () {
             new Tab("engine", "Engine"),
             new Tab("game", "Game"),
             new Tab("bracket", "Bracket"),
+            new Tab("players", "Players"),
             new Tab("src", "Src"),
             new Tab("log", "Log")
         ]);
@@ -2463,6 +2646,7 @@ var GUI = /** @class */ (function () {
         this.tabs.setElement_("book", this.bookdiv);
         this.createGameDiv();
         this.tabs.setElement_("game", this.gamediv);
+        this.tabs.setElement_("players", this.players.createElement());
         this.createBracketDiv();
         this.tabs.setElement_("bracket", this.bracketdiv);
         this.createSrcDiv();
@@ -3348,7 +3532,7 @@ var Globals;
 (function (Globals) {
     Globals.gui = new GUI();
     Globals.wboard = new wBoard();
-    Globals.startup = new TextAsset("startup.json?v6");
+    Globals.startup = new TextAsset("startup.json");
     Globals.log = function (li) { };
 })(Globals || (Globals = {}));
 var gui = Globals.gui;
