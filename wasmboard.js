@@ -2013,13 +2013,13 @@ var Pairing = /** @class */ (function () {
                         setText(player.name).
                         paddingTopPx(this.LABEL_PADDING).
                         paddingLeftPx(this.LABEL_PADDING).
-                        cursor("pointer"));
+                        cursor("pointer").
+                        addEventListener("mousedown", this.playerpressed.bind(this, player.name)));
             this.labels[i].position("absolute").
                 topPx((i * 2 + 1) * this.HEIGHT / 4 - this.LABEL_HEIGHT / 2).
                 leftPx(3).
                 widthPx(this.LABEL_WIDTH).
-                heightPx(this.LABEL_HEIGHT).
-                addEventListener("mousedown", this.playerpressed.bind(this, player.name));
+                heightPx(this.LABEL_HEIGHT);
             this.div.appendChild(this.labels[i]);
             this.scores[i] = (this.parentbracket.editmode ?
                 new HTMLInputElement_().
@@ -2407,7 +2407,7 @@ var Bracket = /** @class */ (function () {
                     player.score = pairing.scores[i].getText();
                 }
             }
-        this.json = JSON.stringify(this.pairingstateregistry);
+        this.json = JSON.stringify(this.pairingstateregistry, null, 1);
         localStorage.setItem(this.storeid(), this.json);
         Globals.gui.srctext.setText(this.json);
     };
