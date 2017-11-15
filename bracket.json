@@ -91,7 +91,7 @@
   "3": {
    "players": [
     {
-     "name": "?",
+     "name": "tipau",
      "score": "0"
     },
     {
@@ -404,7 +404,7 @@
    "players": [
     {
      "name": "tipau",
-     "score": "0"
+     "score": "10"
     },
     {
      "name": "MathNetaji",
@@ -412,7 +412,7 @@
     }
    ],
    "games": [],
-   "forfeit": false
+   "forfeit": true
   },
   "7": {
    "players": [
