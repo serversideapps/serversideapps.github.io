@@ -390,14 +390,221 @@
    "players": [
     {
      "name": "penguingim1",
-     "score": "0"
+     "score": "5.5"
     },
     {
      "name": "DanDan2016",
-     "score": "0"
+     "score": "2.5"
     }
    ],
-   "games": [],
+   "games": [
+    {
+     "result": "0-1",
+     "id": "Bvd9Zgoa",
+     "lgsjson": {
+      "gameid": "Bvd9Zgoa",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "dandan2016",
+       "Black": "penguingim1",
+       "GameId": "Bvd9Zgoa",
+       "Url": "https://lichess.org/Bvd9Zgoa/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 16. 23:00:23",
+       "LastMoveAt": "2017. 11. 16. 23:08:04",
+       "Duration": "00:07:41",
+       "Status": "resign",
+       "Turns": 58,
+       "Winner": "black",
+       "WinnerName": "penguingim1"
+      },
+      "moves": "Nh3 h6 d4 e6 e4 g6 Na3 b5 g3 Bb7 d5 d6 Be3 a5 c3 exd5 Bb6 Qf6 f4 Qe6 Nc4 Qg4 Qf3 Qxg3 Bxc7 bxc4 Bb5+ Kd8 e5 d5 Bc6 Rb8 b3 Ne7 e6 f5 Bxd5 Kc7 Rd1 Nd5 e7 Bxe7 O-O Rbe8 h4 Re2 Rf3 Rg2+ Kh1 Rh2+ Kg1 Rh1+ Kg2 g5 Rfd3 gxf4 Rg3 Nf4+",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "C5HCARxb",
+     "lgsjson": {
+      "gameid": "C5HCARxb",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "penguingim1",
+       "Black": "dandan2016",
+       "GameId": "C5HCARxb",
+       "Url": "https://lichess.org/C5HCARxb/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 16. 23:08:08",
+       "LastMoveAt": "2017. 11. 16. 23:16:39",
+       "Duration": "00:08:32",
+       "Status": "resign",
+       "Turns": 78,
+       "Winner": "white",
+       "WinnerName": "penguingim1"
+      },
+      "moves": "e3 Nf6 Qf3 c6 Nh3 Qa5 b4 Kd8 Qf5 e6 bxa5 Ne4 Qxe4 Na6 c3 h6 Nf4 g6 d4 d5 Bxa6 e5 Ba3 Bb4 Nd2 Bg4 Nh5 Be2 Nf6 b5 Nf3 a5 Nd7 f6 dxe5 d4 exd4 Bc5 Nd4 Re8 Nxb5 c5 Bc1 Bf1+ Be3 Bxg2 Rd1 Re6 Nxf6+ Ke7 Rd7+ Ke8 Re7+ Kd8 Bf4 Ra6 Bc7+ Kc8 Bb6 Rxb6 f4 h5 h4 Kb8 a4 Kc8 Rd7 c4 Kf1 Kb8 Rc7 Ka8 Rb7 g5 f5 g4 f6 g3",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "jqQdr2RF",
+     "lgsjson": {
+      "gameid": "jqQdr2RF",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "dandan2016",
+       "Black": "penguingim1",
+       "GameId": "jqQdr2RF",
+       "Url": "https://lichess.org/jqQdr2RF/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 16. 23:16:49",
+       "LastMoveAt": "2017. 11. 16. 23:21:03",
+       "Duration": "00:04:14",
+       "Status": "resign",
+       "Turns": 25,
+       "Winner": "white",
+       "WinnerName": "dandan2016"
+      },
+      "moves": "Nh3 h6 d4 e5 e4 d5 c3 c6 exd5 Na6 Bg5 f6 Qb3 Be6 Bxf6 Qh4 g3 Qe4+ dxe5 Bc5 Kd1 Rd8+ Bd3 Rd5 Qxd5",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "draw",
+     "id": "gdWGTdHP",
+     "lgsjson": {
+      "gameid": "gdWGTdHP",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "penguingim1",
+       "Black": "dandan2016",
+       "GameId": "gdWGTdHP",
+       "Url": "https://lichess.org/gdWGTdHP/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 16. 23:21:09",
+       "LastMoveAt": "2017. 11. 16. 23:29:32",
+       "Duration": "00:08:23",
+       "Status": "draw",
+       "Turns": 75
+      },
+      "moves": "Nf3 f6 e3 d5 Ng5 fxg5 Qh5+ g6 Qe5 Be6 Bb5+ c6 Qc7 Qxc7 f3 Bg7 d4 Nf6 e4 dxe4 d5 O-O-O Nc3 Ne4 fxe4 Rhf8 Bf4 Bg4 d6 exd6 Nd5 Be5 c3 cxb5 O-O Be2 Rf2 Bf3 g3 Bd4 cxd4 Rd2 Rxd2 Be4 Rd1 Bd3 Re1 Be2 Rc1+ Bc4 b3 Rf5 g4 Rf6 bxc4+ Rc6 Re1 Re6 Be5 Rc6 h4 Rc2 Rc1 b5 h5 b4 g5 Rxc1 Bd4 a6 hxg6 b3 axb3 a5 Bb2",
+      "result": "draw"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "tR5Q2F8g",
+     "lgsjson": {
+      "gameid": "tR5Q2F8g",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "dandan2016",
+       "Black": "penguingim1",
+       "GameId": "tR5Q2F8g",
+       "Url": "https://lichess.org/tR5Q2F8g/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 16. 23:29:37",
+       "LastMoveAt": "2017. 11. 16. 23:38:27",
+       "Duration": "00:08:50",
+       "Status": "resign",
+       "Turns": 64,
+       "Winner": "black",
+       "WinnerName": "penguingim1"
+      },
+      "moves": "Nh3 h6 d4 e6 e4 Na6 a3 d5 g3 f5 e5 Be7 Nf4 Bg5 Bd2 Bxf4 Qh5+ g6 Qh4 Qxh4 Nc3 Nb4 Nb5 Nd3+ Kd1 a6 b3 axb5 a4 Ne7 a5 Nxf2 a6 bxa6 Bb4 c5 Ra7 Rxa7 Ke2 Ba6+ Kf2 f4 g4 g5 Ba5 h5 Bd8 Nc8 b4 Be2 Ra1 hxg4 h4 g4 Ra6 g3+ Ke1 f3 Rc6 f2+ Kd2 f1=Q Rc7 Qe1+",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "HKD458yd",
+     "lgsjson": {
+      "gameid": "HKD458yd",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "penguingim1",
+       "Black": "dandan2016",
+       "GameId": "HKD458yd",
+       "Url": "https://lichess.org/HKD458yd/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 16. 23:38:30",
+       "LastMoveAt": "2017. 11. 16. 23:46:33",
+       "Duration": "00:08:03",
+       "Status": "variantEnd",
+       "Turns": 63,
+       "Winner": "white",
+       "WinnerName": "penguingim1"
+      },
+      "moves": "Nf3 f6 Nd4 Nh6 Nf5 Nxf5 Nc3 c6 e4 d5 d4 a6 exd5 Bf5 Bc4 Qd5 Qe2 e6 Bxd5 Bb4 Bh6 Bg4 Qe3 g6 O-O Bf3 g3 Nd7 Rfe1 O-O-O d5 b6 dxc6 Rd2 Re2 Rhd8 Qf4 Rd1+ Re1 R1d2 Ne2 R8d6 h4 R2d4 c3 Bxe2 cxd4 Be1 Kh1 Bd2 Qc4+ Rc6 Qd3 Rd6 Qe4 Rd5 Bxd2 f5 Rc1+ Kd8 Rc8+ Kd7 Qxe6#",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "cHjdFIBX",
+     "lgsjson": {
+      "gameid": "cHjdFIBX",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "dandan2016",
+       "Black": "penguingim1",
+       "GameId": "cHjdFIBX",
+       "Url": "https://lichess.org/cHjdFIBX/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 16. 23:46:39",
+       "LastMoveAt": "2017. 11. 16. 23:54:34",
+       "Duration": "00:07:54",
+       "Status": "resign",
+       "Turns": 77,
+       "Winner": "white",
+       "WinnerName": "dandan2016"
+      },
+      "moves": "e3 Nf6 Qf3 c6 Nc3 Qa5 Bb5 Kd8 Qf5 e6 Qg5 h6 Nf3 hxg5 Ne5 d5 Ba6 Qb4 g3 bxa6 b3 Qe4 Nxd5 Na6 b4 Nc5 d3 Na4 h4 c5 c4 Bb7 f3 Nc3 a4 a5 b5 Bd6 e4 f6 h5 Kd7 h6 gxh6 Bh6 Rag8 Bf8 Rxf8 Rh7+ Rxh7 f4 Bf8 Kd2 e5 d4 exf4 d5 Bh6+ Kc2 Kd8 Rh1 Bc8 g4 f5 exf5 Ne2 Rf1 Nd4+ Kd1 Bf4 b6 Ne2 b7 Ke7 b8=Q Nc3+ Kc2",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "2tXwk4x9",
+     "lgsjson": {
+      "gameid": "2tXwk4x9",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "penguingim1",
+       "Black": "dandan2016",
+       "GameId": "2tXwk4x9",
+       "Url": "https://lichess.org/2tXwk4x9/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 16. 23:54:38",
+       "LastMoveAt": "2017. 11. 16. 23:57:45",
+       "Duration": "00:03:07",
+       "Status": "resign",
+       "Turns": 39,
+       "Winner": "white",
+       "WinnerName": "penguingim1"
+      },
+      "moves": "Nf3 f6 Nd4 Nh6 Nf5 Nxf5 Nc3 c6 e4 e6 Nb5 cxb5 Qh5+ g6 Qb5 Nc6 Qb6 Qxb6 Bb5 Kf7 Bxd7 Rd8 d4 Bc5 O-O Bxd4 Bg5 fxg5 Rad1 Rd2 Rxd2 Kg7 Rd1 Rf8 f4 Rd8 Rd7+ Rxd7 c4",
+      "result": "1-0"
+     },
+     "i": 0
+    }
+   ],
    "forfeit": false
   },
   "6": {
