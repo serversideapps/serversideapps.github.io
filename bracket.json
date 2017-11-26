@@ -37,7 +37,7 @@
      "score": "0"
     },
     {
-     "name": "?",
+     "name": "FeegLood",
      "score": "0"
     }
    ],
@@ -249,14 +249,275 @@
    "players": [
     {
      "name": "tipau",
-     "score": "0"
+     "score": "4"
     },
     {
      "name": "FeegLood",
-     "score": "0"
+     "score": "6"
     }
    ],
-   "games": [],
+   "games": [
+    {
+     "result": "0-1",
+     "id": "lXgtHETp",
+     "lgsjson": {
+      "gameid": "lXgtHETp",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "tipau",
+       "Black": "feeglood",
+       "GameId": "lXgtHETp",
+       "Url": "https://lichess.org/lXgtHETp/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 21:15:55",
+       "LastMoveAt": "2017. 11. 26. 21:22:13",
+       "Duration": "00:06:18",
+       "Status": "resign",
+       "Turns": 32,
+       "Winner": "black",
+       "WinnerName": "feeglood"
+      },
+      "moves": "Nh3 h6 e4 e6 d4 d5 Na3 b5 g3 e5 dxe5 Bd6 e5 Bg4 f3 d4 e6 f5 e7 Qd7 Nc4 Bb4+ c3 Qe6+ Ne5 d3 Bxd3 Qd5 O-O Qd2 Qxd2 Bc5+",
+      "result": "0-1"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "zom0qvpQ",
+     "lgsjson": {
+      "gameid": "zom0qvpQ",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "feeglood",
+       "Black": "tipau",
+       "GameId": "zom0qvpQ",
+       "Url": "https://lichess.org/zom0qvpQ/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 21:22:17",
+       "LastMoveAt": "2017. 11. 26. 21:26:13",
+       "Duration": "00:03:57",
+       "Status": "resign",
+       "Turns": 24,
+       "Winner": "black",
+       "WinnerName": "tipau"
+      },
+      "moves": "Nf3 f6 Nc3 Nh6 g4 c6 d4 e5 Ng5 f5 h4 Ba3 bxa3 fxg4 Bg5 Qa5 e4 Ng4 f3 Nf2 Qb1 Nd3+ Kd1 Ne1",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "0sjbmk5W",
+     "lgsjson": {
+      "gameid": "0sjbmk5W",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "tipau",
+       "Black": "feeglood",
+       "GameId": "0sjbmk5W",
+       "Url": "https://lichess.org/0sjbmk5W/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 21:26:25",
+       "LastMoveAt": "2017. 11. 26. 21:33:23",
+       "Duration": "00:06:58",
+       "Status": "resign",
+       "Turns": 47,
+       "Winner": "white",
+       "WinnerName": "tipau"
+      },
+      "moves": "Nh3 h6 e4 e6 d4 d5 Na3 b5 g3 e5 dxe5 Bd6 e5 Bg4 f3 d4 Bc4 bxc4 Nb5 Bb4+ c3 d3 Bg5 Qd4 Qxd3 Bf5 O-O-O Bd3 Nxa7 hxg5 Ng5 f6 Nh7 Bc5 b4 Bf2 a4 fxe5 Rde1+ Bxe1 a5 Ne7 a6 Nd5 a7 Kd7 Nf8+",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "YviGEJ0k",
+     "lgsjson": {
+      "gameid": "YviGEJ0k",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "feeglood",
+       "Black": "tipau",
+       "GameId": "YviGEJ0k",
+       "Url": "https://lichess.org/YviGEJ0k/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 21:33:29",
+       "LastMoveAt": "2017. 11. 26. 21:38:48",
+       "Duration": "00:05:19",
+       "Status": "resign",
+       "Turns": 25,
+       "Winner": "white",
+       "WinnerName": "feeglood"
+      },
+      "moves": "Nf3 f6 Nc3 Nh6 g4 c6 d4 e5 Ng5 f5 Rg1 Bb4 Nxh7 d5 g5 exd4+ c3 Qe7 e3 Na6 f4 Bc5 b4 Qe4 Qh5+",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "0-1",
+     "id": "13SqVVbt",
+     "lgsjson": {
+      "gameid": "13SqVVbt",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "tipau",
+       "Black": "feeglood",
+       "GameId": "13SqVVbt",
+       "Url": "https://lichess.org/13SqVVbt/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 21:38:53",
+       "LastMoveAt": "2017. 11. 26. 21:44:47",
+       "Duration": "00:05:55",
+       "Status": "outoftime",
+       "Turns": 34,
+       "Winner": "black",
+       "WinnerName": "feeglood"
+      },
+      "moves": "Nh3 h6 e4 e6 d4 d5 Na3 b5 g3 c5 e5 f6 c3 c4 f4 f5 Be2 g6 Nf2 a6 Ne4 fxe4 f5 exf5 O-O Bf5 Bg5 Qc8 Be7 Bg7 h3 h5 Bg4 Bh6",
+      "result": "0-1"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "jYczCe7v",
+     "lgsjson": {
+      "gameid": "jYczCe7v",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "feeglood",
+       "Black": "tipau",
+       "GameId": "jYczCe7v",
+       "Url": "https://lichess.org/jYczCe7v/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 21:45:06",
+       "LastMoveAt": "2017. 11. 26. 21:51:53",
+       "Duration": "00:06:47",
+       "Status": "resign",
+       "Turns": 42,
+       "Winner": "black",
+       "WinnerName": "tipau"
+      },
+      "moves": "e3 e6 Nf3 Nc6 b4 f6 Bb2 g6 h4 Ne5 Nxe5 d5 Nc3 a5 b5 Bb4 Ba3 e5 h5 e4 Be2 Bg4 Bxg4 f5 hxg6 h5 Kf1 Nf6 f3 h4 b6 c6 Nb5 Bxd2 Be7 Qxb6 c4 h3 g4 fxg4 cxd5 Rg8",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "0-1",
+     "id": "OqNVY4nm",
+     "lgsjson": {
+      "gameid": "OqNVY4nm",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "tipau",
+       "Black": "feeglood",
+       "GameId": "OqNVY4nm",
+       "Url": "https://lichess.org/OqNVY4nm/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 21:52:05",
+       "LastMoveAt": "2017. 11. 26. 21:57:24",
+       "Duration": "00:05:19",
+       "Status": "resign",
+       "Turns": 32,
+       "Winner": "black",
+       "WinnerName": "feeglood"
+      },
+      "moves": "Nh3 h6 e3 e6 Nf4 g6 Nh5 Bb4 c3 b5 Ng7+ Kf8 d4 Bb7 e4 f5 Bxb5 Qh4 g3 Qh3 Kd2 fxe4 Qg4 Nf6 Nxe6 Bxh1 Qf4+ Qf5 Na3 Nc6 Nb5 Re8",
+      "result": "0-1"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "z8yqyOWx",
+     "lgsjson": {
+      "gameid": "z8yqyOWx",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "feeglood",
+       "Black": "tipau",
+       "GameId": "z8yqyOWx",
+       "Url": "https://lichess.org/z8yqyOWx/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 21:57:40",
+       "LastMoveAt": "2017. 11. 26. 22:02:57",
+       "Duration": "00:05:17",
+       "Status": "resign",
+       "Turns": 37,
+       "Winner": "white",
+       "WinnerName": "feeglood"
+      },
+      "moves": "e3 e6 Nf3 Nc6 Bb5 Qf6 c3 Nh6 Qa4 Ng4 Kd1 Nxe3 Re1 Qf4 Qxf4 Bb4 d4 O-O Bf4 e5 d5 d6 Bxc6 Bc5 Be3 Bg4+ Kc1 Bf5 Na3 Bb1 Nb5 Bxa2 Nxd6 b6 Bh6 gxh6 Re3",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "X0ve5QZI",
+     "lgsjson": {
+      "gameid": "X0ve5QZI",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "tipau",
+       "Black": "feeglood",
+       "GameId": "X0ve5QZI",
+       "Url": "https://lichess.org/X0ve5QZI/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 22:03:32",
+       "LastMoveAt": "2017. 11. 26. 22:08:28",
+       "Duration": "00:04:56",
+       "Status": "resign",
+       "Turns": 25,
+       "Winner": "white",
+       "WinnerName": "tipau"
+      },
+      "moves": "Nf3 f6 Nc3 Nh6 g4 c6 d4 e5 Ng5 f5 h4 Ba3 Nf7 O-O bxa3 Qa5 Ba3 Re8 d5 d6 Bb4 Qa6 Nb5 c5 Nxa7",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "DqC3d3Hg",
+     "lgsjson": {
+      "gameid": "DqC3d3Hg",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "feeglood",
+       "Black": "tipau",
+       "GameId": "DqC3d3Hg",
+       "Url": "https://lichess.org/DqC3d3Hg/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 26. 22:08:32",
+       "LastMoveAt": "2017. 11. 26. 22:15:14",
+       "Duration": "00:06:42",
+       "Status": "outoftime",
+       "Turns": 37,
+       "Winner": "white",
+       "WinnerName": "feeglood"
+      },
+      "moves": "Nf3 f6 Nc3 c6 e3 e6 Nd4 Nh6 Ndb5 Ng4 f4 cxb5 Nb5 Ba3 Nc7+ Kf8 bxa3 Nc6 c3 g6 Ba3+ Nb4 cxb4 b5 Qb3 Nxh2 Rc1 b4 Ba6 Bxa6 Nxa8 h5 Rc8 Kg7 Qd3 f5 Qd6",
+      "result": "1-0"
+     },
+     "i": 1
+    }
+   ],
    "forfeit": false
   }
  },
