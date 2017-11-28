@@ -33,7 +33,7 @@
   "1": {
    "players": [
     {
-     "name": "?",
+     "name": "Arka50",
      "score": "0"
     },
     {
@@ -235,14 +235,193 @@
    "players": [
     {
      "name": "Arka50",
-     "score": "0"
+     "score": "6"
     },
     {
      "name": "penguingim1",
-     "score": "0"
+     "score": "1"
     }
    ],
-   "games": [],
+   "games": [
+    {
+     "result": "1-0",
+     "id": "aOVjmrus",
+     "lgsjson": {
+      "gameid": "aOVjmrus",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "arka50",
+       "Black": "penguingim1",
+       "GameId": "aOVjmrus",
+       "Url": "https://lichess.org/aOVjmrus/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 28. 1:14:23",
+       "LastMoveAt": "2017. 11. 28. 1:19:49",
+       "Duration": "00:05:26",
+       "Status": "resign",
+       "Turns": 33,
+       "Winner": "white",
+       "WinnerName": "arka50"
+      },
+      "moves": "d4 e6 Nf3 f6 Na3 Na6 Nb5 Nb4 Bh6 gxh6 Nxc7 Nxc2 Rc1 Bb4+ Kd1 Rc8 Rc7 Rxc7 e3 Be1 Bb5 Kf8 d5 a6 Bd3 f5 Ng5 h6 Nh7+ Ke8 d6 b5 Nf8",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "sPkxszZ1",
+     "lgsjson": {
+      "gameid": "sPkxszZ1",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "penguingim1",
+       "Black": "arka50",
+       "GameId": "sPkxszZ1",
+       "Url": "https://lichess.org/sPkxszZ1/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 28. 1:19:56",
+       "LastMoveAt": "2017. 11. 28. 1:23:01",
+       "Duration": "00:03:05",
+       "Status": "resign",
+       "Turns": 12,
+       "Winner": "black",
+       "WinnerName": "arka50"
+      },
+      "moves": "e3 e6 Nf3 Nc6 Nc3 Bb4 d4 Qf6 e4 Nh6 Bxh6 Qf4",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "Do7pb4Pa",
+     "lgsjson": {
+      "gameid": "Do7pb4Pa",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "arka50",
+       "Black": "penguingim1",
+       "GameId": "Do7pb4Pa",
+       "Url": "https://lichess.org/Do7pb4Pa/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 28. 1:23:07",
+       "LastMoveAt": "2017. 11. 28. 1:26:03",
+       "Duration": "00:02:56",
+       "Status": "resign",
+       "Turns": 11,
+       "Winner": "white",
+       "WinnerName": "arka50"
+      },
+      "moves": "Nh3 h6 e4 e6 d4 Na6 Bf4 e5 Ng5 f5 Nf7",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "vbW5nV3f",
+     "lgsjson": {
+      "gameid": "vbW5nV3f",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "penguingim1",
+       "Black": "arka50",
+       "GameId": "vbW5nV3f",
+       "Url": "https://lichess.org/vbW5nV3f/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 28. 1:26:09",
+       "LastMoveAt": "2017. 11. 28. 1:33:07",
+       "Duration": "00:06:57",
+       "Status": "resign",
+       "Turns": 46,
+       "Winner": "black",
+       "WinnerName": "arka50"
+      },
+      "moves": "e3 e6 Nf3 Nc6 Bb5 Qf6 c3 Nh6 Qb3 Ng4 Kd1 Qxc3 Ng5 f6 h3 Bb4 Nc3 fxg5 d4 O-O d5 Nd4 e4 h6 Be3 a6 d6 Ne2 e5 cxd6 g4 d5 Be8 d4 Bf7+ Kh8 g5 Bd7 a4 Rac8 Ke1 Ba5 Kf1 dxc3 Bc5 Be1",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "draw",
+     "id": "vD1m63RW",
+     "lgsjson": {
+      "gameid": "vD1m63RW",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "arka50",
+       "Black": "penguingim1",
+       "GameId": "vD1m63RW",
+       "Url": "https://lichess.org/vD1m63RW/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 28. 1:33:11",
+       "LastMoveAt": "2017. 11. 28. 1:37:08",
+       "Duration": "00:03:57",
+       "Status": "draw",
+       "Turns": 44
+      },
+      "moves": "Nf3 f6 Nd4 Nh6 e3 c6 Qh5+ g6 Nb5 Qa5 c3 gxh5 Nc7+ Kd8 Bb5 Qxa2 Nxa8 Rg8 g4 cxb5 Rg1 d5 d4 e5 h3 a5 g5 Ba3 bxa3 fxg5 Rg7 Rxg7 h4 a4 dxe5 b5 f4 d4 exd4 Bf5 Kf2 h5 Kg1 Kc8",
+      "result": "draw"
+     },
+     "i": 0
+    },
+    {
+     "result": "draw",
+     "id": "SUq9gshQ",
+     "lgsjson": {
+      "gameid": "SUq9gshQ",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "penguingim1",
+       "Black": "arka50",
+       "GameId": "SUq9gshQ",
+       "Url": "https://lichess.org/SUq9gshQ/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 28. 1:37:10",
+       "LastMoveAt": "2017. 11. 28. 1:44:55",
+       "Duration": "00:07:45",
+       "Status": "draw",
+       "Turns": 69
+      },
+      "moves": "e3 e6 Nf3 Nc6 Nc3 Bb4 d4 Qf6 Bb5 Nh6 g4 Nxg4 Qf3 Qxf3 e4 g5 Rg1 b6 d5 Bc5 Be3 Ba6 d6 Kf8 Bxc6 Bf1 e5 f5 f4 g4 a4 a6 a5 b5 Nd5 cxd6 Rd1 Rc8 Rxd7 Kf7 Bc5 Rd8 Bd6 h5 h4 g3 Kd2 Bd3 c4 g2 c5 Be4 Kc1 Bc6 b4 Rg8 Kd2 Ke8 Kc1 Kd7 Kd2 Kc8 Kc1 Kb7 Kd2 Ka8 Kc1 Bd5 Kd2",
+      "result": "draw"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "sRfinGlx",
+     "lgsjson": {
+      "gameid": "sRfinGlx",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "arka50",
+       "Black": "penguingim1",
+       "GameId": "sRfinGlx",
+       "Url": "https://lichess.org/sRfinGlx/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 28. 1:44:59",
+       "LastMoveAt": "2017. 11. 28. 1:52:08",
+       "Duration": "00:07:10",
+       "Status": "resign",
+       "Turns": 63,
+       "Winner": "white",
+       "WinnerName": "arka50"
+      },
+      "moves": "Nf3 f6 Nc3 c6 e3 d5 Ng5 Bg4 f3 fxg5 f4 e6 g3 Nf6 Bh3 Ng4 Bxg4 h5 h4 Bd6 O-O O-O f5 Kh8 f6 gxf6 Rf7 Rxf7 Qf1 Qf6 Qf5 Qxf5 Nb5 cxb5 b3 Be5 d4 Nc6 Ba3 Rg8 Bf8 Rg4 Rf1 Rg8 Bg7+ Kh7 Bxe5 Rg4 Rf7+ Kg8 Rg7+ Kf8 Rxg4 e5 c4 Nb4 cxd5 Nxa2 d5 Ke7 d6+ Kd7 g4",
+      "result": "1-0"
+     },
+     "i": 0
+    }
+   ],
    "forfeit": false
   },
   "3": {
