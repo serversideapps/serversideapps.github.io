@@ -19,7 +19,7 @@
   "0": {
    "players": [
     {
-     "name": "?",
+     "name": "onubense",
      "score": "0"
     },
     {
@@ -50,14 +50,197 @@
    "players": [
     {
      "name": "onubense",
-     "score": "0"
+     "score": "6"
     },
     {
      "name": "kreedz",
-     "score": "0"
+     "score": "1"
     }
    ],
-   "games": [],
+   "games": [
+    {
+     "result": "1-0",
+     "id": "ojW8Tks0",
+     "lgsjson": {
+      "gameid": "ojW8Tks0",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "kreedz",
+       "Black": "onubense",
+       "GameId": "ojW8Tks0",
+       "Url": "https://lichess.org/ojW8Tks0/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 30. 12:18:48",
+       "LastMoveAt": "2017. 11. 30. 12:24:59",
+       "Duration": "00:06:11",
+       "Status": "variantEnd",
+       "Turns": 31,
+       "Winner": "white",
+       "WinnerName": "kreedz"
+      },
+      "moves": "Nf3 f6 Nd4 Nh6 e3 Ng4 f4 Na6 Bxa6 b5 h3 h5 hxg4 e5 f5 exd4 d4 d5 e4 Bb7 Qe2 Qd7 Nc3 O-O-O a4 c5 e5 cxd4 e6 Bb4+ exd7#",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "oFNMpueS",
+     "lgsjson": {
+      "gameid": "oFNMpueS",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "kreedz",
+       "GameId": "oFNMpueS",
+       "Url": "https://lichess.org/oFNMpueS/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 30. 12:25:02",
+       "LastMoveAt": "2017. 11. 30. 12:29:35",
+       "Duration": "00:04:33",
+       "Status": "variantEnd",
+       "Turns": 25,
+       "Winner": "white",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nh3 h6 e4 e6 d4 d5 Na3 b5 g3 a5 e5 c5 c3 a4 Nf4 Nf6 Ng6 Bd6 Qf3 cxd4 exd6 d4 Ne5 O-O Nxf7#",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "maa74HO7",
+     "lgsjson": {
+      "gameid": "maa74HO7",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "kreedz",
+       "Black": "onubense",
+       "GameId": "maa74HO7",
+       "Url": "https://lichess.org/maa74HO7/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 30. 12:29:36",
+       "LastMoveAt": "2017. 11. 30. 12:37:10",
+       "Duration": "00:07:34",
+       "Status": "mate",
+       "Turns": 54,
+       "Winner": "black",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nh3 h6 d4 e6 e4 Na6 b4 d5 g3 f5 f4 Be7 e5 Bh4 Ng1 Nf6 exf6 e5 Be2 Qe7 Bh5+ g6 Qe2 O-O Nh3 Kh8 c3 Bd7 a4 Rg8 Rg1 Rac8 c4 c5 b5 Nb4 dxc5 Qb4+ Nc3 Qb3 Kf1 Qc2 Qd2 dxc4 Bb2 Qc1+ Qxc1 Rc2 Ke1 Re2+ Kd1 Rc8 Re1 Rc1#",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "mZxLOmo2",
+     "lgsjson": {
+      "gameid": "mZxLOmo2",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "kreedz",
+       "GameId": "mZxLOmo2",
+       "Url": "https://lichess.org/mZxLOmo2/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 30. 12:37:12",
+       "LastMoveAt": "2017. 11. 30. 12:44:38",
+       "Duration": "00:07:25",
+       "Status": "outoftime",
+       "Turns": 47,
+       "Winner": "white",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nf3 f6 d4 e6 Na3 Nh6 Bxh6 Bxa3 e4 g6 d5 O-O h4 Na6 b4 h6 h5 d6 hxg6 e5 Nd4 f5 Ne6 Bxe6 Qh5 fxe4 O-O-O Qg5+ Qxh6 Rf4 Rh8+ Kf7 Rf8+ Ke7 Rf7+ Ke8 Bd3 Rh4 Rh1 e4 Be2 c5 Rxb7 e3 Rxh4 exf2 g4",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "TXwZwZgG",
+     "lgsjson": {
+      "gameid": "TXwZwZgG",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "kreedz",
+       "Black": "onubense",
+       "GameId": "TXwZwZgG",
+       "Url": "https://lichess.org/TXwZwZgG/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 30. 12:44:44",
+       "LastMoveAt": "2017. 11. 30. 12:51:55",
+       "Duration": "00:07:10",
+       "Status": "resign",
+       "Turns": 44,
+       "Winner": "black",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nf3 f6 d4 d5 Nc3 b5 e4 Nh6 Ne5 Ng4 f4 fxe5 f5 Ne3 Bxe3 e5 exd5 Qh4+ g3 Qg4 Qf3 Ba3 f6 Bxb2 fxg7 Qxg3 h3 Bb7 d5 Nd7 Rg1 O-O-O Rg7 Kb8 Rxd7 Bxd5 Bxb5 e4 Ke2 e3 h4 Ka8 c4 c5",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "46NW61QX",
+     "lgsjson": {
+      "gameid": "46NW61QX",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "kreedz",
+       "GameId": "46NW61QX",
+       "Url": "https://lichess.org/46NW61QX/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 30. 12:52:05",
+       "LastMoveAt": "2017. 11. 30. 12:58:54",
+       "Duration": "00:06:49",
+       "Status": "mate",
+       "Turns": 43,
+       "Winner": "white",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nc3 e6 d4 Bb4 Nf3 f5 Ne5 d5 f3 Nc6 Bg5 Nf6 Nf7 O-O Nxd8 Ng4 Be7 Rf7 fxg4 e5 e3 g6 Ba6 exd4+ c3 b6 O-O Ne5 h3 f4 Kh1 Nd3 Bxd3 f3 gxf3 Rf2 Rxf2 h6 cxb4 Re8 Qd4 Rxe7 Qg7#",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "Mavh9Qjs",
+     "lgsjson": {
+      "gameid": "Mavh9Qjs",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "kreedz",
+       "Black": "onubense",
+       "GameId": "Mavh9Qjs",
+       "Url": "https://lichess.org/Mavh9Qjs/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 11. 30. 12:58:58",
+       "LastMoveAt": "2017. 11. 30. 13:08:23",
+       "Duration": "00:09:26",
+       "Status": "variantEnd",
+       "Turns": 114,
+       "Winner": "black",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nf3 f6 Ne5 fxe5 d4 Nf6 Bg5 d5 Nc3 b5 e4 Bg4 f3 e6 a4 a5 exd5 Bd6 g3 O-O Bh3 Qe8 O-O Bxh3 h3 Bf4 Ne4 h6 Kh1 Be3 c3 Kh8 d5 exd5 Qd5 Nxd5 Be7 Rf7 Bf6 Rxf6 Rfe1 b4 Rad1 Bd2 Re7 Qxe7 b3 Nc6 h4 Rd8 g4 Ne5 h5 Be1 Rd7 Rxd7 f4 Nd3 g5 g6 f5 gxf5 gxh6 Kh7 h6 Nf4 cxb4 Bb4 Kh2 Ne6 Kg3 Nd4 Kg4 Nc6 Kf5 Be7 b4 Bxb4 Kg6 Ne7 Kf7 c5 Kg7 c4 Kf7 c3 Kg6 c2 Kg7 c1=Q Kg6 Qg5 Kg7 Kg6 h7 Kf5+ Kf6 Ng6 Ke5 Nh8 Kf4 Kg6+ Kf5 Kg7+ Kg6 Qh6 Kf6 Qg6 Kf7 Kh6+ Kg7 Kh5+ Kh6 Qxh7#",
+      "result": "0-1"
+     },
+     "i": 1
+    }
+   ],
    "forfeit": false
   },
   "1": {
