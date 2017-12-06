@@ -3,7 +3,7 @@
   "0": {
    "players": [
     {
-     "name": "?",
+     "name": "onubense",
      "score": "0"
     },
     {
@@ -20,14 +20,243 @@
    "players": [
     {
      "name": "onubense",
-     "score": "0"
+     "score": "5.5"
     },
     {
      "name": "pashpash",
-     "score": "0"
+     "score": "3.5"
     }
    ],
-   "games": [],
+   "games": [
+    {
+     "result": "draw",
+     "id": "Fm0nm0FP",
+     "lgsjson": {
+      "gameid": "Fm0nm0FP",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "pashpash",
+       "GameId": "Fm0nm0FP",
+       "Url": "https://lichess.org/Fm0nm0FP/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 06. 23:00:35",
+       "LastMoveAt": "2017. 12. 06. 23:09:05",
+       "Duration": "00:08:30",
+       "Status": "draw",
+       "Turns": 70
+      },
+      "moves": "Nh3 h6 Nc3 e6 d4 Bb4 e4 f5 Bb5 c6 O-O Na6 Bxa6 g6 Kh1 f4 e5 d6 f3 Bxc3 b4 Nf6 exf6 O-O Qe2 Re8 Bb2 e5 d5 c5 a4 a5 b5 b6 c4 Bf5 Qd2 Bd3 Rac1 Be2 Ba1 Bd3 Qb2 Bc2 Rfe1 Bd3 Rf1 Be2 Rcd1 Rc8 Rd2 Rc7 Rdd1 Rh7 Rd2 Bd3 Rxd3 Rhe7 Re1 Qc8 Qc2 Qd7 Qf2 Qc8 Qd2 Qd7 Qf2 Qc8 Qd2 Qd7",
+      "result": "draw"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "YREEVydg",
+     "lgsjson": {
+      "gameid": "YREEVydg",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "pashpash",
+       "Black": "onubense",
+       "GameId": "YREEVydg",
+       "Url": "https://lichess.org/YREEVydg/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 06. 23:09:08",
+       "LastMoveAt": "2017. 12. 06. 23:16:24",
+       "Duration": "00:07:15",
+       "Status": "resign",
+       "Turns": 49,
+       "Winner": "white",
+       "WinnerName": "pashpash"
+      },
+      "moves": "Nf3 f6 e4 d5 Nc3 Bg4 d4 Na6 exd5 e6 Nb5 Nh6 Nxc7 Nf5 Bb5+ Kd8 Be3 Nd6 Qd3 Ne4 Kd1 Nb4 c3 Nxf2+ Ke1 Nc2+ Kf2 Nxd4 Rhd1+ Bxd1 Rd1+ Bd6 c4 Kc8 c5 Bg3+ Kf1 Bd6 cxd6 b6 Rd8+ Kc7 Rd7+ Kc8 Rc7+ Kd8 Rc8+ Ke7 Re8+",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "3JzLSpjb",
+     "lgsjson": {
+      "gameid": "3JzLSpjb",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "pashpash",
+       "GameId": "3JzLSpjb",
+       "Url": "https://lichess.org/3JzLSpjb/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 06. 23:16:27",
+       "LastMoveAt": "2017. 12. 06. 23:23:36",
+       "Duration": "00:07:08",
+       "Status": "resign",
+       "Turns": 41,
+       "Winner": "white",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nf3 f6 d4 d5 Nc3 b5 e4 Bg4 exd5 e6 Bf4 Ne7 Bd6 cxd6 Bd3 Qc7 g3 Nc6 O-O Nb4 Nxb5 Qxc2 Rfc1 Bd6 Ng5 Bc7 Nxh7 Bf3 Rc6 g5 Rac1 Be2 Rd6 Kf8 Rd7 g4 Rg7 f5 Rc6 Bb5 Rg8+",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "JsAQZcFL",
+     "lgsjson": {
+      "gameid": "JsAQZcFL",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "pashpash",
+       "Black": "onubense",
+       "GameId": "JsAQZcFL",
+       "Url": "https://lichess.org/JsAQZcFL/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 06. 23:25:05",
+       "LastMoveAt": "2017. 12. 06. 23:30:43",
+       "Duration": "00:05:37",
+       "Status": "resign",
+       "Turns": 34,
+       "Winner": "black",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nf3 f6 Nc3 Nh6 g4 c6 d4 e6 e4 f5 Nh4 Bd6 g5 Bg3 hxg3 g6 gxh6 h6 e5 d5 a4 a5 Ne4 dxe4 d5 Na6 d6 Bd7 Be3 Nb4 Bb6 Qg5 Be3 Nd3+",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "tpxaxxxt",
+     "lgsjson": {
+      "gameid": "tpxaxxxt",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "pashpash",
+       "GameId": "tpxaxxxt",
+       "Url": "https://lichess.org/tpxaxxxt/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 06. 23:30:52",
+       "LastMoveAt": "2017. 12. 06. 23:38:53",
+       "Duration": "00:08:00",
+       "Status": "mate",
+       "Turns": 57,
+       "Winner": "white",
+       "WinnerName": "onubense"
+      },
+      "moves": "d4 Nh6 h3 e5 e4 Na6 b4 d5 Be2 g6 f4 c6 f5 Nxf5 Nf3 dxe4 O-O f6 Bg4 Bf5 dxe5 Qd2 Qxd2 Bc5+ bxc5 O-O Bc8 b6 Re1 Re8 Re7 Rxe7 Nc3 Nc5 Re1 Ne6 Nd5 h5 Nxf6 g5 Re8+ Kg7 Re7+ Kf8 Rf7+ Kg8 h4 gxh4 Rg7+ Kf8 Rf7+ Kg8 Bf5 Rd8 Rg7+ Kh8 Rg8#",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "uqzWpDQo",
+     "lgsjson": {
+      "gameid": "uqzWpDQo",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "pashpash",
+       "Black": "onubense",
+       "GameId": "uqzWpDQo",
+       "Url": "https://lichess.org/uqzWpDQo/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 06. 23:38:58",
+       "LastMoveAt": "2017. 12. 06. 23:44:39",
+       "Duration": "00:05:42",
+       "Status": "resign",
+       "Turns": 45,
+       "Winner": "white",
+       "WinnerName": "pashpash"
+      },
+      "moves": "e3 e6 Nf3 Qf6 Bd3 Bb4 c3 Bxc3 Nc3 Nc6 Ne4 Nb4 Neg5 Kd8 Qa4 c6 d3 Qf4 Nxh7 Qg4 Qa5+ b6 Qg5+ f6 Qh5 Nc2+ Kd1 Nxe3+ f3 Qxh5 h4 Kc7 Be3 c5 Rc1 Kd8 h5 Bb7 h6 Bxf3 h7 Ke7 h8=Q Rxh8 Rh8",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "draw",
+     "id": "TcCCD5jj",
+     "lgsjson": {
+      "gameid": "TcCCD5jj",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "pashpash",
+       "GameId": "TcCCD5jj",
+       "Url": "https://lichess.org/TcCCD5jj/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 06. 23:44:47",
+       "LastMoveAt": "2017. 12. 06. 23:51:09",
+       "Duration": "00:06:23",
+       "Status": "draw",
+       "Turns": 40
+      },
+      "moves": "Nc3 e6 d4 Bb4 Nf3 f6 e4 Nh6 Bb5 c6 Bxh6 g6 O-O d5 exd5 O-O Kh1 h6 Ne4 e5 Nd6 Bxd6 Bc4+ Kh8 dxe5 Qd2 Qxd2 Nd7 Rfe1 Ne5 Nxe5 Re8 Re7 Rxe7 Rd1 Be6 Rd8+ Rxd8 Bxe6 g5",
+      "result": "draw"
+     },
+     "i": 0
+    },
+    {
+     "result": "draw",
+     "id": "MWKDR9VP",
+     "lgsjson": {
+      "gameid": "MWKDR9VP",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "pashpash",
+       "Black": "onubense",
+       "GameId": "MWKDR9VP",
+       "Url": "https://lichess.org/MWKDR9VP/black",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 06. 23:57:32",
+       "LastMoveAt": "2017. 12. 07. 0:05:22",
+       "Duration": "00:07:50",
+       "Status": "draw",
+       "Turns": 64
+      },
+      "moves": "Nf3 f6 Nc3 Nh6 g4 c6 d4 e6 e4 f5 Nh4 Bd6 g5 Bg3 hxg3 g6 gxh6 h6 e5 d5 a4 a5 Qf3 b5 axb5 a4 Nb5 Ba6 Kd1 c5 Nd6+ Kd7 Bb5+ Bxb5 Bd2 Nc6 Nb7 Qc8 c4 Na5 Bxa5 a3 b3 Qc7 Nd8 Ke8 Qh3 Qa5 b4 Qa4+ Rxa3 Ra1+ Kc2 Rc1+ Kb2 Rc2+ Kb1 Rb2+ Kc1 Rc2+ Kb1 Rb2+ Kc1 Rc2+",
+      "result": "draw"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "x6BFy5Vk",
+     "lgsjson": {
+      "gameid": "x6BFy5Vk",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "pashpash",
+       "GameId": "x6BFy5Vk",
+       "Url": "https://lichess.org/x6BFy5Vk/white",
+       "Rated": "false",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 07. 0:05:27",
+       "LastMoveAt": "2017. 12. 07. 0:15:08",
+       "Duration": "00:09:41",
+       "Status": "variantEnd",
+       "Turns": 111,
+       "Winner": "white",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nh3 h6 d4 e6 e4 Na6 b4 d5 g3 Be7 e5 Bh4 Ng5 Bxg5 Nc3 c6 Bxa6 f5 b5 c5 b6 a6 Na4 Nf6 exf6 e5 Qh5+ g6 Qh4 Qxh4 dxc5 Be6 Nc5 Rd8 O-O d4 a4 Bc4 Re1 O-O Nd7 Kh8 Bb2 Bb3 Bxd4 Bc4 Red1 Rfe8 a5 e4 Re1 e3 fxe3 Re6 Re5 f4 Rae1 f3 Kf2 Be2 h4 g5 h5 Rc8 c4 Bxc4 Rc1 Rce8 Nf8 Rd6 Rd1 Rd5 Ng6+ Kg8 Re7 Rd2+ Rxd2 Rxe7 Ne5 Kf8 Nd7+ Ke7 Nc5 Kd6 Nxb7 Ke5 b7 Ke4 b8=Q Ke3 g4 Ke2 Qg3 Kf1 Ke3 Ke2 Qf2 Kd3 Kd2 Kc3 Ke1 Kd2 Kf1+ Ke1 Kg1+ Kf1 Kg2 Kg1 Kf1 Kg2 Qxf3#",
+      "result": "1-0"
+     },
+     "i": 0
+    }
+   ],
    "forfeit": false
   },
   "1": {
