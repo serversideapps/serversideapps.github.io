@@ -4,14 +4,245 @@
    "players": [
     {
      "name": "onubense",
-     "score": "0"
+     "score": "3"
     },
     {
      "name": "Arka50",
-     "score": "0"
+     "score": "6"
     }
    ],
-   "games": [],
+   "games": [
+    {
+     "result": "1-0",
+     "id": "CiKRgpCD",
+     "lgsjson": {
+      "gameid": "CiKRgpCD",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "arka50",
+       "Black": "onubense",
+       "GameId": "CiKRgpCD",
+       "Url": "https://lichess.org/CiKRgpCD/white",
+       "Rated": "true",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 14. 19:04:43",
+       "LastMoveAt": "2017. 12. 14. 19:11:09",
+       "Duration": "00:06:25",
+       "Status": "resign",
+       "Turns": 37,
+       "Winner": "white",
+       "WinnerName": "arka50"
+      },
+      "moves": "Nf3 f6 Nc3 Nh6 g4 c6 d4 e6 e4 f5 Nh4 Bb4 g5 e5 gxh6 g5 f4 d5 fxe5 Qe7 e5 Na6 Be2 Be6 Bh5+ Kd8 Bf7 Bd7 a3 Qf8 e6 Bc8 e7+ Kc7 Qe2 Qxe7 Qe5+",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "draw",
+     "id": "COBp8T4l",
+     "lgsjson": {
+      "gameid": "COBp8T4l",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "arka50",
+       "GameId": "COBp8T4l",
+       "Url": "https://lichess.org/COBp8T4l/black",
+       "Rated": "true",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 14. 19:11:19",
+       "LastMoveAt": "2017. 12. 14. 19:19:43",
+       "Duration": "00:08:24",
+       "Status": "draw",
+       "Turns": 78
+      },
+      "moves": "Nh3 h6 e4 d5 Nc3 b5 d4 e6 g3 f5 Nf4 fxe4 Bd3 g6 Bf4 Bd6 Nxd5 e5 c3 Qe7 Qb3 exf4+ Qe6 Qxe6 O-O-O Nf6 Bxg6 O-O f3 Bf5 Rhe1 Be4 d5 Nd7 d6 Nc5 d7 Rad8 Rd5 Nd3+ Rxd3 Rf5 Re5 Rf6 Rg5+ Rg6 f4 c5 f5 Rxg5 f6 Kf7 b3 a5 a3 h5 h3 b4 c4 a4 Kb1 bxa3 Ka1 a3 b4 cxb4 Ka2 Rb8 d8=Q Rb2+ Ka1 Rb1+ Ka2 Rb2+ Ka1 Rb1+ Ka2 Rb2+",
+      "result": "draw"
+     },
+     "i": 0
+    },
+    {
+     "result": "0-1",
+     "id": "FO12w1Lp",
+     "lgsjson": {
+      "gameid": "FO12w1Lp",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "arka50",
+       "Black": "onubense",
+       "GameId": "FO12w1Lp",
+       "Url": "https://lichess.org/FO12w1Lp/white",
+       "Rated": "true",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 14. 19:31:12",
+       "LastMoveAt": "2017. 12. 14. 19:39:55",
+       "Duration": "00:08:42",
+       "Status": "mate",
+       "Turns": 84,
+       "Winner": "black",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nf3 f6 Nc3 Nh6 g4 c6 d4 e6 e4 f5 Nh4 Bb4 g5 d5 gxh6 f4 e5 Nd7 Bb5 Rg8 Rg1 g6 Bxc6 b6 Qe2 a6 Nf3 g5 Nh4 g4 Bxf4 g3 f4 gxh2 O-O-O Rg2 Nxg2 Qh4 Qh5+ Qxh5 Rg1 Bf8 f5 Bb7 f6 O-O-O f7 h5 Ne2 h4 Nf4 h3 Nxh3 Kb8 Kb1 b5 c4 dxc4 Rc1 Be4+ Ka1 Bc2 b4 a5 Rg1 Rd5 Rg8 Bg6 Rh8 axb4 Rh3 b4 Rb3 Rd8 Rf3 Rc8 a4 Rc1+ Kb2 Rb1+ Ka2 Rb2+ Ka1 Ra2#",
+      "result": "0-1"
+     },
+     "i": 1
+    },
+    {
+     "result": "1-0",
+     "id": "62wUQSUJ",
+     "lgsjson": {
+      "gameid": "62wUQSUJ",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "arka50",
+       "GameId": "62wUQSUJ",
+       "Url": "https://lichess.org/62wUQSUJ/black",
+       "Rated": "true",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 14. 19:40:01",
+       "LastMoveAt": "2017. 12. 14. 19:48:18",
+       "Duration": "00:08:17",
+       "Status": "outoftime",
+       "Turns": 69,
+       "Winner": "white",
+       "WinnerName": "onubense"
+      },
+      "moves": "Nh3 h6 e4 e6 d4 Na6 Nc3 Bb4 Be2 f5 f4 c6 Bh5+ g6 Qe2 Nc5 dxc5 Qb6 Be3 fxe4 Qe3 Qd4 O-O Qd2 Qxd2 Ne7 f5 O-O Nf4 d5 f6 Nf5 f7+ Kh8 Bxg6 e5 Ng6+ Kh7 Nxf8 Bh3 gxh3 Rf8 Rf5 e4 Rh5 Kh8 Kf1 e3 Ke1 e2 c3 c5 b3 b5 a3 a5 Rb1 a4 bxa4 c4 h3 d4 cxd4 c3 Rc1 c2 Rd5 Kh7 Rd8",
+      "result": "1-0"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "HJXo6VPx",
+     "lgsjson": {
+      "gameid": "HJXo6VPx",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "arka50",
+       "Black": "onubense",
+       "GameId": "HJXo6VPx",
+       "Url": "https://lichess.org/HJXo6VPx/white",
+       "Rated": "true",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 14. 19:48:29",
+       "LastMoveAt": "2017. 12. 14. 19:56:44",
+       "Duration": "00:08:14",
+       "Status": "resign",
+       "Turns": 65,
+       "Winner": "white",
+       "WinnerName": "arka50"
+      },
+      "moves": "e3 e6 Nf3 Qf6 c3 Bc5 Bb5 c6 Bxc6 Nc6 g4 h5 Rg1 g6 g5 Qf5 d3 Nge7 Rg4 Nd5 Na3 Ndb4 Nb5 Nc2+ Kf1 d6 Nc7+ Kd8 Kg1 b6 Kh1 Rb8 h3 a5 e4 Bb7 Nxe6 hxg4 Qf3 Rh5 Qd1 Ne5 Bf4 Kc7 d4 Rbh8 Qf1 Ba6 c4 Ne1 c5 Kd8 cxd6 Rxh3+ Qh3 Be2 f3 Bxf3 Rc1 Nc2 e5 Rh4 d5 Rg4 Qh8+",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "draw",
+     "id": "Rf5iArGJ",
+     "lgsjson": {
+      "gameid": "Rf5iArGJ",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "arka50",
+       "GameId": "Rf5iArGJ",
+       "Url": "https://lichess.org/Rf5iArGJ/black",
+       "Rated": "true",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 14. 20:06:30",
+       "LastMoveAt": "2017. 12. 14. 20:14:01",
+       "Duration": "00:07:31",
+       "Status": "draw",
+       "Turns": 54
+      },
+      "moves": "Nh3 h6 e4 d5 Nc3 b5 d4 e6 g3 f5 e5 Nd7 a4 Ba3 bxa3 f4 Bd3 g6 Bxf4 Ne7 Qf3 Nf5 Bxf5 Nf6 exf6 Qf6 Qf5 O-O f3 Qxf5 axb5 a6 O-O c5 Na4 a5 f4 Ba6 Rf2 Kh8 Nb6 Rab8 Nd7 Rb1+ Rxb1 a4 c4 a3 Nxf8 a2 Rxa2 dxc4 dxc5 Bb7",
+      "result": "draw"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "9opQLt8U",
+     "lgsjson": {
+      "gameid": "9opQLt8U",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "arka50",
+       "Black": "onubense",
+       "GameId": "9opQLt8U",
+       "Url": "https://lichess.org/9opQLt8U/white",
+       "Rated": "true",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 14. 20:14:19",
+       "LastMoveAt": "2017. 12. 14. 20:22:00",
+       "Duration": "00:07:41",
+       "Status": "variantEnd",
+       "Turns": 49,
+       "Winner": "white",
+       "WinnerName": "arka50"
+      },
+      "moves": "Nf3 f6 Nc3 Nh6 g4 c6 d4 e6 e4 f5 Nh4 Bb4 Ng6 hxg6 h4 d6 e5 dxe5 Bg2 f4 f3 Nd7 O-O Nf6 Re1 g5 h5 b6 Re5 Ba6 Nb5 Bd2 Qf1 Bxb5 Bxd2 b5 Rae1 Ne4 Rf5 Ng3 Qd3 Ne2+ Kh2 Qf6 d5 Qd4 Rf8+ Ke7 dxe6#",
+      "result": "1-0"
+     },
+     "i": 1
+    },
+    {
+     "result": "0-1",
+     "id": "hlW3wjd2",
+     "lgsjson": {
+      "gameid": "hlW3wjd2",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "onubense",
+       "Black": "arka50",
+       "GameId": "hlW3wjd2",
+       "Url": "https://lichess.org/hlW3wjd2/black",
+       "Rated": "true",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 14. 20:22:17",
+       "LastMoveAt": "2017. 12. 14. 20:30:24",
+       "Duration": "00:08:07",
+       "Status": "mate",
+       "Turns": 72,
+       "Winner": "black",
+       "WinnerName": "arka50"
+      },
+      "moves": "Nh3 h6 e4 d5 Nc3 b5 d4 e6 g3 f5 f4 c5 exd5 Bd6 d5 Nf6 Ng5 Bxf4 Bg5 O-O d6 Bb7 Be2 Nbd7 Bf3 Be4 Bxe4 Ne5 Bxf6 g6 h4 Qd7 Qe2 f4 O-O e5 g4 e4 Nd5 Kh8 Nf6 Qb7 Nd5 f3 Qe3 f2+ Kh1 Rf3 d7 Rh3+ Qxh3 e3 d8=Q+ Rxd8 Rad1 e2 Rd3 exf1=Q Rf3 f1=Q+ Rxf1 c4 c3 b4 Kg1 bxc3 h5 c3 bxc3 Qb2 g5 Qg2#",
+      "result": "0-1"
+     },
+     "i": 0
+    },
+    {
+     "result": "1-0",
+     "id": "DG8SerIR",
+     "lgsjson": {
+      "gameid": "DG8SerIR",
+      "pgnHeaders": {
+       "GameVariant": "atomic",
+       "White": "arka50",
+       "Black": "onubense",
+       "GameId": "DG8SerIR",
+       "Url": "https://lichess.org/DG8SerIR/white",
+       "Rated": "true",
+       "Speed": "blitz",
+       "CreatedAt": "2017. 12. 14. 20:40:43",
+       "LastMoveAt": "2017. 12. 14. 20:49:11",
+       "Duration": "00:08:28",
+       "Status": "resign",
+       "Turns": 89,
+       "Winner": "white",
+       "WinnerName": "arka50"
+      },
+      "moves": "Nf3 f6 e3 d5 Ng5 fxg5 Qh5+ g6 Qe5 Be6 Bb5+ c6 Nc3 Na6 Bd3 Bg7 Nb5 Bxe5 Nc7+ Qxc7 b4 d4 Bb2 e5 Bxa6 Nf6 g4 h5 h3 hxg4 d3 e4 O-O-O O-O-O Kb1 b5 exd4 e3 fxe3 Nd5 Rdf1 Rhf8 Rf7 Rxf7 Bf6 Rd7 c4 Ne3 Bg5 Nf1 h4 Rh7 Bf4 a5 Rg1 g5 Bxg5 Ng3 Re1 Ne2 Rf1 Nf4 Re1 Ne2 Rf1 Rf7 Rxf7 Nc3+ Kc1 a4 a3 Ne2+ Kb1 Nc3+ Ka1 Ne2 h5 c5 h6 Nc1 h7 Nb3+ Kb1 Nd2+ Kc1 Nb3+ Kd1 Kd7 h8=Q",
+      "result": "1-0"
+     },
+     "i": 1
+    }
+   ],
    "forfeit": false
   }
  },
